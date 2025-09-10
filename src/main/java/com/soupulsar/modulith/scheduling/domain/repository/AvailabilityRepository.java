@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AvailabilityRepository {
 
-    void save(Availability availability);
+    Availability save(Availability availability);
     List<Availability> findBySpecialistId(UUID specialistId);
     List<Availability> findBySpecialistIdAndDayOfWeek(UUID specialistId, DayOfWeek dayOfWeek);
 }
