@@ -30,6 +30,10 @@ public class Session {
         return new Session(UUID.randomUUID(), specialistId, clientId, startAt, endAt, SessionStatus.SCHEDULING);
     }
 
+    public static Session restore(UUID sessionId, UUID specialistId, UUID clientId, LocalDateTime startAt, LocalDateTime endAt, SessionStatus status) {
+        return new Session(sessionId, specialistId, clientId, startAt, endAt, status);
+    }
+
     public void confirmPayment() {
         if (this.status != SessionStatus.AWAITING_PAYMENT) {
             throw new IllegalStateException("Payment can only be confirmed for sessions awaiting payment.");
@@ -49,6 +53,10 @@ public class Session {
             throw new IllegalStateException("Only confirmed sessions can be completed.");
         }
         this.status = SessionStatus.COMPLETED;
+    }
+
+    public boolean overlaps(LocalDateTime startAt, LocalDateTime endAt) {
+        return this.startAt.isBefore(endAt) && startAt.isBefore(this.endAt);
     }
 
 }
