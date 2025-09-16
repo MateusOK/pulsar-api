@@ -22,7 +22,7 @@ public class AvailabilityController {
     @PostMapping
     public ResponseEntity<CreateAvailabilityResponse> createAvailability(@RequestBody CreateAvailabilityRequest request) {
         CreateAvailabilityResponse response = createAvailabilityUseCase.execute(request);
-        return ResponseEntity.created(URI.create("/api/availabilities" + response.id())).body(response);
+        return ResponseEntity.created(URI.create("/api/availabilities/" + response.id())).body(response);
     }
 
 
