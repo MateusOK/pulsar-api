@@ -11,5 +11,5 @@ public interface SessionRepository {
 
     Session save(Session session);
 
-    List<Session> findBySpecialistIdAndTimeRange(UUID uuid, LocalDateTime startAt, LocalDateTime endAt);
+    List<Session> findOverlappingSessions(UUID uuid, LocalDateTime startAt, LocalDateTime endAt);
 }

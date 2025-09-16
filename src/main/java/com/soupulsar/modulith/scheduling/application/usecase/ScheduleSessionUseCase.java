@@ -34,7 +34,7 @@ public class ScheduleSessionUseCase {
         }
 
         List<Session> existingSessions =
-                sessionRepository.findBySpecialistIdAndTimeRange(
+                sessionRepository.findOverlappingSessions(
                         request.specialistId(),
                         request.startTime(),
                         request.endTime()

@@ -45,7 +45,7 @@ class ScheduleSessionUseCaseTest {
 
         Availability availability = new Availability(UUID.randomUUID(), specialistId, start.getDayOfWeek(), LocalTime.of(9, 0), LocalTime.of(17, 0));
         when(availabilityRepository.findBySpecialistIdAndDayOfWeek(any(), any())).thenReturn(List.of(availability));
-        when(sessionRepository.findBySpecialistIdAndTimeRange(any(), any(), any())).thenReturn(List.of());
+        when(sessionRepository.findOverlappingSessions(any(), any(), any())).thenReturn(List.of());
 
         Session session = Session.scheduleSession(specialistId, clientId, start, end);
         when(sessionRepository.save(any())).thenReturn(session);
@@ -85,7 +85,7 @@ class ScheduleSessionUseCaseTest {
         when(availabilityRepository.findBySpecialistIdAndDayOfWeek(any(), any())).thenReturn(List.of(availability));
 
         Session overlappingSession = Session.scheduleSession(specialistId, UUID.randomUUID(), start.minusMinutes(30), end.plusMinutes(30));
-        when(sessionRepository.findBySpecialistIdAndTimeRange(any(), any(), any())).thenReturn(List.of(overlappingSession));
+        when(sessionRepository.findOverlappingSessions(any(), any(), any())).thenReturn(List.of(overlappingSession));
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
         assertEquals("The requested time overlaps with an existing session", ex.getMessage());

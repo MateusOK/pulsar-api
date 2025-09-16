@@ -28,8 +28,8 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
-    public List<Session> findBySpecialistIdAndTimeRange(UUID uuid, LocalDateTime startAt, LocalDateTime endAt) {
-        return jpaRepository.findBySpecialistIdAndTimeRange(uuid, startAt, endAt)
+    public List<Session> findOverlappingSessions(UUID uuid, LocalDateTime startAt, LocalDateTime endAt) {
+        return jpaRepository.findOverlappingSessions(uuid, startAt, endAt)
                 .stream()
                 .map(SessionMapper::toModel)
                 .toList();
