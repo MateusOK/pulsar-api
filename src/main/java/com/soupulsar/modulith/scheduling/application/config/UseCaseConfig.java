@@ -1,7 +1,6 @@
 package com.soupulsar.modulith.scheduling.application.config;
 
-import com.soupulsar.modulith.scheduling.application.usecase.CreateAvailabilityUseCase;
-import com.soupulsar.modulith.scheduling.application.usecase.ScheduleSessionUseCase;
+import com.soupulsar.modulith.scheduling.application.usecase.*;
 import com.soupulsar.modulith.scheduling.domain.repository.AvailabilityRepository;
 import com.soupulsar.modulith.scheduling.domain.repository.SessionRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,4 +20,18 @@ public class UseCaseConfig {
         return new ScheduleSessionUseCase(sessionRepository, availabilityRepository, publisher);
     }
 
+    @Bean
+    public ConfirmSessionUseCase confirmSessionUseCase(SessionRepository sessionRepository) {
+        return new ConfirmSessionUseCase(sessionRepository);
+    }
+
+    @Bean
+    public CancelSessionUseCase cancelSessionUseCase(SessionRepository sessionRepository) {
+        return new CancelSessionUseCase(sessionRepository);
+    }
+
+    @Bean
+    public CompleteSessionUseCase completeSessionUseCase(SessionRepository sessionRepository) {
+        return new CompleteSessionUseCase(sessionRepository);
+    }
 }

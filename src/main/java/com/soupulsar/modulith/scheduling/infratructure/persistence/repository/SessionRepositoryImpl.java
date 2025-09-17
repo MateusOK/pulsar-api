@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -25,6 +26,12 @@ public class SessionRepositoryImpl implements SessionRepository {
         SessionEntity entity = SessionMapper.toEntity(session);
         SessionEntity saved = jpaRepository.save(entity);
         return SessionMapper.toModel(saved);
+    }
+
+    @Override
+    public Optional<Session> findBySessionId(UUID sessionId) {
+        return jpaRepository.findBySessionId(sessionId)
+                .map(SessionMapper::toModel);
     }
 
     @Override
