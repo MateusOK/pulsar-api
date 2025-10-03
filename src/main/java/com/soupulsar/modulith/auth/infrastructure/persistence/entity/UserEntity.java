@@ -24,7 +24,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String cpf;
 
     @Column(nullable = false)
@@ -37,8 +37,10 @@ public class UserEntity {
     private String telephone;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserStatus status;
 }

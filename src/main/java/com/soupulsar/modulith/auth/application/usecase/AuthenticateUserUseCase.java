@@ -1,18 +1,19 @@
 package com.soupulsar.modulith.auth.application.usecase;
 
 import com.soupulsar.modulith.auth.application.dto.AuthUserRequest;
+import com.soupulsar.modulith.auth.application.security.JwtService;
 import com.soupulsar.modulith.auth.application.security.PasswordHasher;
 import com.soupulsar.modulith.auth.domain.model.User;
 import com.soupulsar.modulith.auth.domain.model.enums.UserStatus;
 import com.soupulsar.modulith.auth.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
 public class AuthenticateUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordHasher passwordHasher;
+    private final JwtService jwtService;
 
     public String execute(AuthUserRequest request) {
 
@@ -27,8 +28,7 @@ public class AuthenticateUserUseCase {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        return "JWT-TOKEN"; // Placeholder for actual JWT generation logic
+        return jwtService.generateToken(user);
 
     }
-
 }
