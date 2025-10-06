@@ -1,5 +1,6 @@
 package com.soupulsar.modulith.auth.application.config;
 
+import com.soupulsar.modulith.auth.application.security.JwtService;
 import com.soupulsar.modulith.auth.application.security.PasswordHasher;
 import com.soupulsar.modulith.auth.application.usecase.AuthenticateUserUseCase;
 import com.soupulsar.modulith.auth.application.usecase.RegisterUserUseCase;
@@ -11,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class AuthUseCaseConfig {
 
     @Bean
-    public AuthenticateUserUseCase authenticateUserUseCase(UserRepository userRepository, PasswordHasher passwordHasher) {
-        return new AuthenticateUserUseCase(userRepository, passwordHasher);
+    public AuthenticateUserUseCase authenticateUserUseCase(UserRepository userRepository, PasswordHasher passwordHasher, JwtService jwtService) {
+        return new AuthenticateUserUseCase(userRepository, passwordHasher, jwtService);
     }
 
     @Bean

@@ -1,6 +1,7 @@
 package com.soupulsar.modulith.auth.application.usecase;
 
 import com.soupulsar.modulith.auth.application.dto.AuthUserRequest;
+import com.soupulsar.modulith.auth.application.security.JwtService;
 import com.soupulsar.modulith.auth.application.security.PasswordHasher;
 import com.soupulsar.modulith.auth.domain.model.User;
 import com.soupulsar.modulith.auth.domain.model.enums.UserRole;
@@ -20,12 +21,14 @@ class AuthenticateUserUseCaseTest {
     private UserRepository userRepository;
     private PasswordHasher passwordHasher;
     private AuthenticateUserUseCase useCase;
+    private JwtService jwtService;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
         passwordHasher = mock(PasswordHasher.class);
-        useCase = new AuthenticateUserUseCase(userRepository, passwordHasher);
+        jwtService = mock(JwtService.class);
+        useCase = new AuthenticateUserUseCase(userRepository, passwordHasher, jwtService);
     }
 
     @Test
@@ -38,10 +41,12 @@ class AuthenticateUserUseCaseTest {
 
         when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(user));
         when(passwordHasher.matches(request.password(), user.getPasswordHash())).thenReturn(true);
+        when(jwtService.generateToken(user)).thenReturn("JWT-TOKEN");
 
         String token = useCase.execute(request);
 
         assertEquals("JWT-TOKEN", token);
+        verify(jwtService).generateToken(user);
     }
 
     @Test
@@ -56,6 +61,7 @@ class AuthenticateUserUseCaseTest {
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
         assertEquals("User is not active", ex.getMessage());
+        verify(jwtService, never()).generateToken(user);
     }
 
     @Test
@@ -71,6 +77,7 @@ class AuthenticateUserUseCaseTest {
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
         assertEquals("Invalid email or password", ex.getMessage());
+        verify(jwtService, never()).generateToken(user);
     }
 
     @Test
@@ -81,5 +88,6 @@ class AuthenticateUserUseCaseTest {
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
         assertEquals("Invalid email or password", ex.getMessage());
+        verify(jwtService, never()).generateToken(any());
     }
 }

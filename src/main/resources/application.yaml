@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: SouPulsar Modulith
+
+  security:
+    jwt:
+        secret: ${JWT_SECRET:jwt-super-secret-key-place-holder}
+        expiration: ${JWT_EXPIRATION:3600000}
