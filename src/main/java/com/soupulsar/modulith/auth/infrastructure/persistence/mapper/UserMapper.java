@@ -18,19 +18,21 @@ public class UserMapper {
         entity.setPassword(user.getPasswordHash());
         entity.setStatus(user.getStatus());
         entity.setRole(user.getRole());
+        entity.setAddress(AddressMapper.toEmbeddable(user.getAddress()));
         return entity;
     }
 
     public static User toModel(UserEntity entity){
-        return User.restore(
-                entity.getUserId(),
-                entity.getName(),
-                entity.getCpf(),
-                entity.getTelephone(),
-                entity.getEmail(),
-                entity.getPassword(),
-                entity.getRole(),
-                entity.getStatus()
-        );
+        return User.builder()
+                .userId(entity.getUserId())
+                .name(entity.getName())
+                .cpf(entity.getCpf())
+                .telephone(entity.getTelephone())
+                .email(entity.getEmail())
+                .passwordHash(entity.getPassword())
+                .role(entity.getRole())
+                .status(entity.getStatus())
+                .address(AddressMapper.toValueObject(entity.getAddress()))
+                .build();
     }
 }

@@ -3,6 +3,7 @@ package com.soupulsar.modulith.scheduling.domain.model;
 import com.soupulsar.modulith.scheduling.domain.model.enums.SessionStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Builder
 public class Session {
 
     private final UUID sessionId;
@@ -27,7 +29,14 @@ public class Session {
 
 
     public static Session scheduleSession(UUID specialistId, UUID clientId, LocalDateTime startAt, LocalDateTime endAt) {
-        return new Session(UUID.randomUUID(), specialistId, clientId, startAt, endAt, SessionStatus.SCHEDULING);
+        return new SessionBuilder()
+                .sessionId(UUID.randomUUID())
+                .specialistId(specialistId)
+                .clientId(clientId)
+                .startAt(startAt)
+                .endAt(endAt)
+                .status(SessionStatus.AWAITING_PAYMENT)
+                .build();
     }
 
     public static Session restore(UUID sessionId, UUID specialistId, UUID clientId, LocalDateTime startAt, LocalDateTime endAt, SessionStatus status) {

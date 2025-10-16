@@ -38,4 +38,14 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }
+
+    @Override
+    public boolean existsByCpf(String cpf) {
+        return jpaRepository.existsByCpf(cpf);
+    }
+
+    @Override
+    public boolean existsById(UUID userId) {
+        return jpaRepository.existsById(userId);
+    }
 }
