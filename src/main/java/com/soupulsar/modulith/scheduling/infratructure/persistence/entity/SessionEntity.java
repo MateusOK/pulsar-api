@@ -3,6 +3,8 @@ package com.soupulsar.modulith.scheduling.infratructure.persistence.entity;
 import com.soupulsar.modulith.scheduling.domain.model.enums.SessionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,6 +41,7 @@ public class SessionEntity {
     private LocalDateTime endAt;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SessionStatus status;
 
 }

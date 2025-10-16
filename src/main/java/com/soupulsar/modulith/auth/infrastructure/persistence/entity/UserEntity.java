@@ -2,7 +2,15 @@ package com.soupulsar.modulith.auth.infrastructure.persistence.entity;
 
 import com.soupulsar.modulith.auth.domain.model.enums.UserRole;
 import com.soupulsar.modulith.auth.domain.model.enums.UserStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,4 +51,7 @@ public class UserEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+
+    @Embedded
+    private AddressEmbeddable address;
 }

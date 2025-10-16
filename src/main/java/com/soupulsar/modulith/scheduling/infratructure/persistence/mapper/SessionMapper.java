@@ -15,16 +15,19 @@ public class SessionMapper {
         entity.setClientId(session.getClientId());
         entity.setStartAt(session.getStartAt());
         entity.setEndAt(session.getEndAt());
+        entity.setStatus(session.getStatus());
         return entity;
     }
 
     public static Session toModel(SessionEntity entity) {
-        return Session.restore(entity.getSessionId(),
-                entity.getSpecialistId(),
-                entity.getClientId(),
-                entity.getStartAt(),
-                entity.getEndAt(),
-                entity.getStatus());
+        return Session.builder()
+                .sessionId(entity.getSessionId())
+                .specialistId(entity.getSpecialistId())
+                .clientId(entity.getClientId())
+                .startAt(entity.getStartAt())
+                .endAt(entity.getEndAt())
+                .status(entity.getStatus())
+                .build();
     }
 
 }
