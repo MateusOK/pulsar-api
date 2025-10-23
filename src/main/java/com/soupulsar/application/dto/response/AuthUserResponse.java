@@ -1,0 +1,13 @@
+package com.soupulsar.application.dto.response;
+
+import java.util.Date;
+
+public record AuthUserResponse(
+
+        String accessToken,
+        String tokenType,
+        String subject,
+        Date issuedAt,
+        Long expiresIn
+) {
+}

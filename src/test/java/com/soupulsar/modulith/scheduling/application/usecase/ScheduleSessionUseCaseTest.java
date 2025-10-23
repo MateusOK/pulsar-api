@@ -1,12 +1,13 @@
 package com.soupulsar.modulith.scheduling.application.usecase;
 
-import com.soupulsar.modulith.scheduling.application.dto.ScheduleSessionRequest;
-import com.soupulsar.modulith.scheduling.application.dto.ScheduleSessionResponse;
-import com.soupulsar.modulith.scheduling.domain.events.SessionScheduledEvent;
-import com.soupulsar.modulith.scheduling.domain.model.Availability;
-import com.soupulsar.modulith.scheduling.domain.model.Session;
-import com.soupulsar.modulith.scheduling.domain.repository.AvailabilityRepository;
-import com.soupulsar.modulith.scheduling.domain.repository.SessionRepository;
+import com.soupulsar.application.dto.request.ScheduleSessionRequest;
+import com.soupulsar.application.dto.response.ScheduleSessionResponse;
+import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
+import com.soupulsar.domain.event.SessionScheduledEvent;
+import com.soupulsar.domain.model.availability.Availability;
+import com.soupulsar.domain.model.session.Session;
+import com.soupulsar.domain.repository.AvailabilityRepository;
+import com.soupulsar.domain.repository.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
