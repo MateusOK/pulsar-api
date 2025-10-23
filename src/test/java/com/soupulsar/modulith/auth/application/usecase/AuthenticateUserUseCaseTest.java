@@ -1,14 +1,15 @@
 package com.soupulsar.modulith.auth.application.usecase;
 
-import com.soupulsar.modulith.auth.application.dto.AuthUserRequest;
-import com.soupulsar.modulith.auth.application.dto.AuthUserResponse;
-import com.soupulsar.modulith.auth.application.security.JwtService;
-import com.soupulsar.modulith.auth.application.security.PasswordHasher;
-import com.soupulsar.modulith.auth.domain.model.User;
-import com.soupulsar.modulith.auth.domain.model.enums.UserRole;
-import com.soupulsar.modulith.auth.domain.model.enums.UserStatus;
-import com.soupulsar.modulith.auth.domain.model.vo.Address;
-import com.soupulsar.modulith.auth.domain.repository.UserRepository;
+import com.soupulsar.application.dto.request.AuthUserRequest;
+import com.soupulsar.application.dto.response.AuthUserResponse;
+import com.soupulsar.application.security.JwtService;
+import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.application.usecase.AuthenticateUserUseCase;
+import com.soupulsar.domain.model.user.User;
+import com.soupulsar.domain.model.enums.UserRole;
+import com.soupulsar.domain.model.enums.UserStatus;
+import com.soupulsar.domain.model.vo.Address;
+import com.soupulsar.domain.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
