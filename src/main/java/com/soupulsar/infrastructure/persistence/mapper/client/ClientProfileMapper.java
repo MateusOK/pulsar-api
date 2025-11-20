@@ -12,7 +12,6 @@ public class ClientProfileMapper {
         if (clientProfile == null) return null;
 
         ClientProfileEntity entity = new ClientProfileEntity();
-        entity.setProfileId(clientProfile.getProfileId());
         entity.setUserId(clientProfile.getUserId());
         entity.setDateOfBirth(clientProfile.getDateOfBirth());
         entity.setEmergencyContact(EmergencyContactMapper.toEmbeddable(clientProfile.getEmergencyContact()));
@@ -23,7 +22,6 @@ public class ClientProfileMapper {
         if (entity == null) return null;
 
         return ClientProfile.builder()
-                .profileId(entity.getProfileId())
                 .userId(entity.getUserId())
                 .dateOfBirth(entity.getDateOfBirth())
                 .emergencyContact(EmergencyContactMapper.toValueObject(entity.getEmergencyContact()))

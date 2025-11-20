@@ -2,8 +2,6 @@ package com.soupulsar.infrastructure.persistence.entity.client;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -19,10 +17,6 @@ import java.util.UUID;
 public class ClientProfileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private  UUID profileId;
     private  UUID userId;
     private  Date dateOfBirth;
 

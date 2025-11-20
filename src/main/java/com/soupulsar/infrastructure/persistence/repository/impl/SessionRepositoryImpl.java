@@ -8,16 +8,47 @@ import com.soupulsar.infrastructure.persistence.mapper.SessionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 @RequiredArgsConstructor
 @Repository
 public class SessionRepositoryImpl implements SessionRepository {
 
     private final SessionJpaRepository jpaRepository;
+
+    @Override
+    public Map<UUID, Long> countCompletedSessionsBySpecialistIds(List<UUID> specialistIds) {
+        if (specialistIds == null || specialistIds.isEmpty()) return Collections.emptyMap();
+
+        List<Object[]> results = jpaRepository.countCompletedSessionsBySpecialistIds(specialistIds);
+
+        return results.stream().collect(Collectors.toMap(
+                row -> (UUID) row[0],
+                row -> (Long) row[1]
+        ));
+    }
+
+    @Override
+    public Long countCompletedSessionsBySpecialistId(UUID specialistId) {
+        if (specialistId == null) return 0L;
+
+        return jpaRepository.countCompletedSessionsBySpecialistId(specialistId);
+    }
+
+    @Override
+    public List<Session> findBySpecialistIdAndDate(UUID specialistId, LocalDate date) {
+        if (specialistId == null) return Collections.emptyList();
+
+        return jpaRepository.findBySpecialistIdAndDate(specialistId, date)
+                .stream()
+                .map(SessionMapper::toModel)
+                .toList();
+    }
 
     @Override
     public Session save(Session session) {

@@ -4,6 +4,7 @@ import com.soupulsar.application.dto.request.AuthUserRequest;
 import com.soupulsar.application.dto.response.AuthUserResponse;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.domain.exceptions.UserNotFoundException;
 import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.model.enums.UserStatus;
 import com.soupulsar.domain.repository.UserRepository;
@@ -22,7 +23,7 @@ public class AuthenticateUserUseCase {
     public AuthUserResponse execute(AuthUserRequest request) {
 
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new IllegalArgumentException("User is not active");
