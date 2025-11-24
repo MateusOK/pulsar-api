@@ -41,8 +41,8 @@ public class JwtService {
         Date expiryDate = new Date(issueDate.getTime() + expirationMs);
 
         return Jwts.builder()
-                .subject(user.getEmail())
-                .claim("userId", user.getUserId().toString())
+                .subject(user.getUserId().toString())
+                .claim("email", user.getEmail())
                 .claim("role", user.getRole())
                 .claim("status", user.getStatus())
                 .issuer("SouPulsar-AuthService")

@@ -12,12 +12,13 @@ public class SpecialistProfileMapper {
         if (specialistProfile == null) return null;
 
         SpecialistProfileEntity entity = new SpecialistProfileEntity();
-        entity.setProfileId(specialistProfile.getProfileId());
         entity.setUserId(specialistProfile.getUserId());
         entity.setRegistrationNumber(specialistProfile.getRegistrationNumber());
         entity.setApproaches(specialistProfile.getApproaches());
         entity.setFormations(specialistProfile.getFormations());
         entity.setSpecialties(specialistProfile.getSpecialties());
+        entity.setSessionPrice(specialistProfile.getSessionPrice());
+        entity.setSpecialistType(specialistProfile.getSpecialistType());
         entity.setPresentation(PresentationMapper.toEmbeddable(specialistProfile.getPresentation()));
 
         return entity;
@@ -28,12 +29,13 @@ public class SpecialistProfileMapper {
         if (entity == null) return null;
 
         return SpecialistProfile.builder()
-                .profileId(entity.getProfileId())
                 .userId(entity.getUserId())
                 .registrationNumber(entity.getRegistrationNumber())
                 .formations(entity.getFormations())
                 .approaches(entity.getApproaches())
                 .specialties(entity.getSpecialties())
+                .specialistType(entity.getSpecialistType())
+                .sessionPrice(entity.getSessionPrice())
                 .presentation(PresentationMapper.toValueObject(entity.getPresentation()))
                 .build();
     }

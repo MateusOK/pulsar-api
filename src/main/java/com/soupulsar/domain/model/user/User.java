@@ -3,27 +3,25 @@ package com.soupulsar.domain.model.user;
 import com.soupulsar.domain.model.enums.UserRole;
 import com.soupulsar.domain.model.enums.UserStatus;
 import com.soupulsar.domain.model.vo.Address;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Setter
 @Builder
 public class User {
 
     private final UUID userId;
-    private final String name;
+    private  String name;
     private final String cpf;
     private String telephone;
     private String email;
     private String passwordHash;
     private Address address;
     private final UserRole role;
-    private  UserStatus status;
+    private UserStatus status;
 
 
     public static User create(String name, String cpf, String telephone, String email, String passwordHash, UserRole role, Address address) {

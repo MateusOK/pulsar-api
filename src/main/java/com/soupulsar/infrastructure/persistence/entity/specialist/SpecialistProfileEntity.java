@@ -1,18 +1,11 @@
 package com.soupulsar.infrastructure.persistence.entity.specialist;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
+import com.soupulsar.domain.model.enums.SpecialistType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,12 +17,13 @@ import java.util.UUID;
 public class SpecialistProfileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private UUID profileId;
     private UUID userId;
+
     private String registrationNumber;
+    private BigDecimal sessionPrice;
+
+    @Enumerated(EnumType.STRING)
+    private SpecialistType specialistType;
 
     @Embedded
     private PresentationEmbeddable presentation;

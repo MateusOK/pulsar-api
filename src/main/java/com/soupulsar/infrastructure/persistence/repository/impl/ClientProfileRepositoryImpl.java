@@ -27,6 +27,6 @@ public class ClientProfileRepositoryImpl implements ClientProfileRepository {
 
     @Override
     public Optional<ClientProfile> findById(UUID id) {
-        return jpaRepository.findById(id).map(ClientProfileMapper::toModel);
+        return jpaRepository.findByUserId(id).map(ClientProfileMapper::toModel);
     }
 }

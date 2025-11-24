@@ -1,23 +1,21 @@
 package com.soupulsar.domain.model.client;
 
 import com.soupulsar.domain.model.vo.EmergencyContact;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Setter
 @Builder
 public class ClientProfile {
 
     private final UUID profileId;
     private final UUID userId;
     private final Date dateOfBirth;
-    private final EmergencyContact emergencyContact;
+    private EmergencyContact emergencyContact;
 
 
     public static ClientProfile create(UUID userId, Date dateOfBirth, EmergencyContact emergencyContact) {

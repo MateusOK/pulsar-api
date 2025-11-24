@@ -1,15 +1,25 @@
 package com.soupulsar.infrastructure.persistence.repository.impl;
 
+import com.soupulsar.domain.model.enums.UserRole;
+import com.soupulsar.domain.model.enums.UserStatus;
 import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.repository.UserRepository;
 import com.soupulsar.infrastructure.persistence.entity.user.UserEntity;
 import com.soupulsar.infrastructure.persistence.mapper.UserMapper;
 import com.soupulsar.infrastructure.persistence.repository.UserJpaRepository;
+import com.soupulsar.infrastructure.persistence.specification.UserSpecifications;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -32,7 +42,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findById(UUID userId) {
-        return jpaRepository.findById(userId).map(UserMapper::toModel);
+        return jpaRepository.findByUserId(userId).map(UserMapper::toModel);
     }
 
     @Override
@@ -47,6 +57,28 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existsById(UUID userId) {
-        return jpaRepository.existsById(userId);
+        return jpaRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public Page<User> findAll(UserStatus status, UserRole role, Pageable pageable) {
+        Specification<UserEntity> spec = Specification.unrestricted();
+
+        if (status != null) {
+            spec = spec.and(UserSpecifications.hasStatus(status));
+        }
+
+        if (role != null) {
+            spec = spec.and(UserSpecifications.hasRole(role));
+        }
+        return jpaRepository.findAll(spec, pageable).map(UserMapper::toModel);
+    }
+
+    @Override
+    public Map<UUID, User> findAllByUserId(List<UUID> userIds) {
+        if (userIds == null || userIds.isEmpty()) return  Collections.emptyMap();
+        return jpaRepository.findAllByUserIdIn(userIds)
+                .stream()
+                .collect(Collectors.toMap(UserEntity::getUserId, UserMapper::toModel));
     }
 }

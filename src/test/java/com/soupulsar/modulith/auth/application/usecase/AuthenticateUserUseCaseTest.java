@@ -5,6 +5,7 @@ import com.soupulsar.application.dto.response.AuthUserResponse;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
 import com.soupulsar.application.usecase.AuthenticateUserUseCase;
+import com.soupulsar.domain.exceptions.UserNotFoundException;
 import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.model.enums.UserRole;
 import com.soupulsar.domain.model.enums.UserStatus;
@@ -117,8 +118,8 @@ class AuthenticateUserUseCaseTest {
 
         when(userRepository.findByEmail(request.email())).thenReturn(Optional.empty());
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
-        assertEquals("Invalid email or password", ex.getMessage());
+        UserNotFoundException ex = assertThrows(UserNotFoundException.class, () -> useCase.execute(request));
+        assertEquals(UserNotFoundException.class, ex.getClass());
         verify(jwtService, never()).generateToken(any());
     }
 }

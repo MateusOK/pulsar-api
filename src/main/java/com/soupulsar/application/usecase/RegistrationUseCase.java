@@ -55,7 +55,9 @@ public class RegistrationUseCase {
                     request.presentation(),
                     request.formations(),
                     request.specialties(),
-                    request.approaches()
+                    request.approaches(),
+                    request.specialistType(),
+                    request.sessionPrice()
             );
             specialistProfileRepository.save(specialistProfile);
         } else {
