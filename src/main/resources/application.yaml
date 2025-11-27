@@ -22,3 +22,7 @@ spring:
 
   jpa:
     show-sql: true
+
+asaas:
+  apiKey: ${ASAAS_API_KEY:api-key-here}
+  baseUrl: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
