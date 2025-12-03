@@ -16,6 +16,7 @@ public class UserMapper {
         entity.setUserId(user.getUserId());
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPasswordHash());
+        entity.setAsaasCustomerId(user.getAsaasCustomerId());
         entity.setStatus(user.getStatus());
         entity.setRole(user.getRole());
         entity.setAddress(AddressMapper.toEmbeddable(user.getAddress()));
@@ -30,6 +31,7 @@ public class UserMapper {
                 .telephone(entity.getTelephone())
                 .email(entity.getEmail())
                 .passwordHash(entity.getPassword())
+                .asaasCustomerId(entity.getAsaasCustomerId())
                 .role(entity.getRole())
                 .status(entity.getStatus())
                 .address(AddressMapper.toValueObject(entity.getAddress()))
