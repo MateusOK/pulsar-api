@@ -38,7 +38,7 @@ asaas:
 springdoc:
   packages-to-scan:
     - com.soupulsar.api.controllers
-    - com.soupulsar.application.dto
+  paths-to-match: /api/**
   api-docs:
     path: /v3/api-docs
     enabled: true
@@ -48,26 +48,22 @@ springdoc:
     operationsSorter: method
     tags-sorter: alpha
     display-request-duration: true
-    url: /v3/api-docs
-  cache:
-    disabled: true
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
   model-converters:
     pageable-converter:
       enabled: false
-  paths-to-match: /api/**
 
 management:
   endpoints:
     web:
+      base-path: /actuator
       exposure:
         include: health,info,metrics
-      base-path: /actuator
-    endpoint:s:
-      health:
-        show-details: always
-        probes:
-          enabled: true
-      shutdown:
+  endpoint:
+    health:
+      show-details: always
+      probes:
         enabled: true
+    shutdown:
+      access: none
