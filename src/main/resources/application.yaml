@@ -2,17 +2,20 @@ spring:
   application:
     name: SouPulsar Modulith
 
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
   security:
     jwt:
         secret: ${JWT_SECRET:jwt-super-secret-key-place-holder}
         expiration: ${JWT_EXPIRATION:3600000}
 
   datasource:
-    url: jdbc:h2:mem:soupulsar;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:soupulsar;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
     driver-class-name: org.h2.Driver
     username: sa
     password:
-
 
   h2:
     console:
@@ -22,7 +25,45 @@ spring:
 
   jpa:
     show-sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
 
 asaas:
   apiKey: ${ASAAS_API_KEY:api-key-here}
   baseUrl: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
+
+springdoc:
+  packages-to-scan:
+    - com.soupulsar.api.controllers
+  paths-to-match: /api/**
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger
+    enabled: true
+    operationsSorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  model-converters:
+    pageable-converter:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+    shutdown:
+      access: none
