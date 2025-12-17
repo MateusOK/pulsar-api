@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.soupulsar</groupId>
-	<artifactId>soupulsar-monolith</artifactId>
+	<artifactId>soupulsar-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SouPulsar Monolith</name>
-	<description>Monolith Api for SouPulsar </description>
+	<name>SouPulsar Api</name>
+	<description>Api for SouPulsar</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -55,6 +55,11 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -111,6 +116,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>soupulsar-api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

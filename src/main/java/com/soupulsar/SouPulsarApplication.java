@@ -6,10 +6,10 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @SpringBootApplication
-public class SouPulsarMonolithApplication {
+public class SouPulsarApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SouPulsarMonolithApplication.class, args);
+		SpringApplication.run(SouPulsarApplication.class, args);
 	}
 
 }
