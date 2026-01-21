@@ -11,12 +11,14 @@ public class PresentationMapper {
     public static PresentationEmbeddable toEmbeddable(Presentation presentation) {
         if (presentation == null) return null;
 
-
         return PresentationEmbeddable.builder()
                 .personalDescription(presentation.getPersonalDescription())
                 .about(presentation.getAbout())
                 .presentationVideoUrl(presentation.getPresentationVideoUrl())
                 .base64Image(presentation.getBase64Image())
+                .specializations(presentation.getSpecializations())
+                .academicHistory(presentation.getAcademicHistory())
+                .therapeuticApproaches(presentation.getTherapeuticApproaches())
                 .build();
     }
 
@@ -28,6 +30,9 @@ public class PresentationMapper {
                 .about(embeddable.getAbout())
                 .presentationVideoUrl(embeddable.getPresentationVideoUrl())
                 .base64Image(embeddable.getBase64Image())
+                .specializations(embeddable.getSpecializations())
+                .academicHistory(embeddable.getAcademicHistory())
+                .therapeuticApproaches(embeddable.getTherapeuticApproaches())
                 .build();
     }
 }

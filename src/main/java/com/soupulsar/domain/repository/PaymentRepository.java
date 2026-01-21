@@ -1,6 +1,6 @@
 package com.soupulsar.domain.repository;
 
-import com.soupulsar.domain.model.Payment;
+import com.soupulsar.domain.model.payment.Payment;
 
 import java.util.Optional;
 import java.util.UUID;

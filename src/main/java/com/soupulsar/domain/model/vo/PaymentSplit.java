@@ -8,18 +8,10 @@ public class PaymentSplit {
     Money platformAmount;
     Money specialistAmount;
 
-    public PaymentSplit(Money platformAmount, Money specialistAmount, Money expectedTotal) {
+    public PaymentSplit(Money platformAmount, Money specialistAmount) {
 
         if (platformAmount.isNegative() || specialistAmount.isNegative()) {
             throw new IllegalArgumentException("Split amounts cannot be negative");
-        }
-
-        Money total = platformAmount.add(specialistAmount);
-
-        if (!total.equals(expectedTotal)) {
-            throw new IllegalArgumentException(
-                    "Split total must equal payment final amount"
-            );
         }
 
         this.platformAmount = platformAmount;

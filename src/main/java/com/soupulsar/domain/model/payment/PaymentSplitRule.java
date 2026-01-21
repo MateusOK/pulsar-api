@@ -61,6 +61,19 @@ public class PaymentSplitRule {
                 .build();
     }
 
+    public static PaymentSplitRule restore(UUID id, PaymentSplitScope scope, UUID specialistId, SpecialistType specialistType,
+                                           Percentage platformPercentage, boolean active, LocalDateTime createdAt) {
+        return PaymentSplitRule.builder()
+                .id(id)
+                .scope(scope)
+                .specialistId(specialistId)
+                .specialistType(specialistType)
+                .platformPercentage(platformPercentage)
+                .active(active)
+                .createdAt(createdAt)
+                .build();
+    }
+
     private static void validateScope(PaymentSplitScope scope, UUID specialistId, SpecialistType specialistType) {
         if (scope == null) {
             throw new IllegalArgumentException("Scope cannot be null");

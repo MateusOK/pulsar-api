@@ -38,6 +38,7 @@ public class Payment {
     public static Payment create(UUID sessionId, UUID specialistId, UUID clientId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod) {
 
         validateCreationParams(sessionId, specialistId, clientId, paymentMethod);
+        validateSplitParams(split, amounts);
         return Payment.builder()
                 .id(UUID.randomUUID())
                 .sessionId(sessionId)
@@ -119,6 +120,12 @@ public class Payment {
         }
         if (paymentMethod == null) {
             throw new IllegalArgumentException("Payment method cannot be null");
+        }
+    }
+
+    private static void validateSplitParams(PaymentSplit split, PaymentAmounts amounts) {
+        if (!split.totalAmount().equals(amounts.getFinalAmount())){
+            throw new IllegalArgumentException("Payment split total must equal the final payment amount");
         }
     }
 }
