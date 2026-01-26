@@ -1,9 +1,9 @@
 package com.soupulsar.infrastructure.persistence.repository.impl;
 
-import com.soupulsar.domain.model.Payment;
+import com.soupulsar.domain.model.payment.Payment;
 import com.soupulsar.domain.repository.PaymentRepository;
 import com.soupulsar.infrastructure.persistence.entity.payment.PaymentEntity;
-import com.soupulsar.infrastructure.persistence.mapper.PaymentMapper;
+import com.soupulsar.infrastructure.persistence.mapper.payment.PaymentMapper;
 import com.soupulsar.infrastructure.persistence.repository.PaymentJpaRepository;
 import lombok.RequiredArgsConstructor;
 

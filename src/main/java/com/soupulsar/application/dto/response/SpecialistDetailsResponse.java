@@ -1,6 +1,9 @@
 package com.soupulsar.application.dto.response;
 
 import com.soupulsar.domain.model.enums.SpecialistType;
+import com.soupulsar.domain.model.vo.Money;
+import com.soupulsar.domain.model.vo.Presentation;
+import com.soupulsar.domain.model.vo.RegistrationNumber;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -11,18 +14,12 @@ import java.util.UUID;
 public record SpecialistDetailsResponse(
         UUID id,
         String name,
-        String registrationNumber,
+        RegistrationNumber registrationNumber,
         String city,
         String state,
-        String about,
+        Presentation presentation,
         SpecialistType specialistType,
-        String introductionVideoUrl,
-        String base64Image,
         Long sessionsCompleted,
-        BigDecimal price,
-        String personalDescription,
-        List<String> specialties,
-        List<String> approaches,
-        List<String> formations
+        Money price
 ) {
 }

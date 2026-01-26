@@ -31,16 +31,10 @@ public class GetSpecialistDetailsUseCase {
                 .registrationNumber(specialistProfile.getRegistrationNumber())
                 .city(user.getAddress().getCity())
                 .state(user.getAddress().getState())
-                .about(specialistProfile.getPresentation().getAbout())
                 .specialistType(specialistProfile.getSpecialistType())
-                .introductionVideoUrl(specialistProfile.getPresentation().getPresentationVideoUrl())
-                .base64Image(specialistProfile.getPresentation().getBase64Image())
+                .presentation(specialistProfile.getPresentation())
                 .sessionsCompleted(completedSessions)
                 .price(specialistProfile.getSessionPrice())
-                .personalDescription(specialistProfile.getPresentation().getPersonalDescription())
-                .specialties(specialistProfile.getSpecialties())
-                .approaches(specialistProfile.getApproaches())
-                .formations(specialistProfile.getFormations())
                 .build();
     }
 }

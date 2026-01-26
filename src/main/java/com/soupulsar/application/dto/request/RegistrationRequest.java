@@ -2,9 +2,7 @@ package com.soupulsar.application.dto.request;
 
 import com.soupulsar.domain.model.enums.SpecialistType;
 import com.soupulsar.domain.model.enums.UserRole;
-import com.soupulsar.domain.model.vo.Address;
-import com.soupulsar.domain.model.vo.EmergencyContact;
-import com.soupulsar.domain.model.vo.Presentation;
+import com.soupulsar.domain.model.vo.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -57,16 +55,10 @@ public record RegistrationRequest(
         @Schema(description = "Type of specialist", example = "PSICOLOGO")
         SpecialistType specialistType,
         @Schema(description = "Price per session", example = "150.00")
-        BigDecimal sessionPrice,
+        Money sessionPrice,
         @Schema(description = "Professional registration number", example = "CRP 06/12345")
-        String registrationNumber,
+        RegistrationNumber registrationNumber,
         @Schema(description = "Specialist presentation details")
-        Presentation presentation,
-        @Schema(description = "List of specialist formations", example = "[\"Bachelor's in Psychology\", \"Master's in Clinical Psychology\"]")
-        List<String> formations,
-        @Schema(description = "List of specialist specialties", example = "[\"Cognitive Behavioral Therapy\", \"Family Therapy\"]")
-        List<String> specialties,
-        @Schema(description = "List of specialist approaches", example = "[\"CBT\", \"Humanistic Therapy\"]")
-        List<String> approaches
+        Presentation presentation
 ) {
 }

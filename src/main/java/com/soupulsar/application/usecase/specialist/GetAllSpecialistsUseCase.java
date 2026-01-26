@@ -47,10 +47,7 @@ public class GetAllSpecialistsUseCase {
                     user.getName(),
                     user.getAddress().getCity(),
                     user.getAddress().getState(),
-                    specialist.getSpecialties(),
-                    specialist.getApproaches(),
-                    specialist.getPresentation().getBase64Image(),
-                    specialist.getSpecialistType(),
+                    specialist.getPresentation(),
                     specialist.getSessionPrice(),
                     sessionCompletedCountMap.getOrDefault(specialist.getUserId(), 0L)
             );

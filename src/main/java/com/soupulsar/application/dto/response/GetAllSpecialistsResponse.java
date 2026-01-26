@@ -1,6 +1,8 @@
 package com.soupulsar.application.dto.response;
 
 import com.soupulsar.domain.model.enums.SpecialistType;
+import com.soupulsar.domain.model.vo.Money;
+import com.soupulsar.domain.model.vo.Presentation;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,11 +13,8 @@ public record GetAllSpecialistsResponse(
         String name,
         String city,
         String state,
-        List<String> specialties,
-        List<String> approaches,
-        String base64Image,
-        SpecialistType specialistType,
-        BigDecimal price,
+        Presentation presentation,
+        Money price,
         Long sessionsCompleted
 ) {
 }
