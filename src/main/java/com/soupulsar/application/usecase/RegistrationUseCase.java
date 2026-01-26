@@ -53,9 +53,6 @@ public class RegistrationUseCase {
                     user.getUserId(),
                     request.registrationNumber(),
                     request.presentation(),
-                    request.formations(),
-                    request.specialties(),
-                    request.approaches(),
                     request.specialistType(),
                     request.sessionPrice()
             );

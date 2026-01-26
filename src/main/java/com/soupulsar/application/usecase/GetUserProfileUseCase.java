@@ -49,9 +49,9 @@ public class GetUserProfileUseCase {
                 .email(user.getEmail())
                 .telephone(user.getTelephone())
                 .specialistType(specialistProfile.getSpecialistType())
-                .therapeuticApproaches(specialistProfile.getApproaches())
-                .clinicalSpecialties(specialistProfile.getSpecialties())
-                .education(specialistProfile.getFormations())
+                .therapeuticApproaches(specialistProfile.getPresentation().getTherapeuticApproaches())
+                .clinicalSpecialties(specialistProfile.getPresentation().getSpecializations())
+                .education(specialistProfile.getPresentation().getAcademicHistory())
                 .addressResponse(AddressResponse.toResponse(user.getAddress()))
                 .build();
     }
