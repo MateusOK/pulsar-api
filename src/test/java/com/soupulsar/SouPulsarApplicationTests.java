@@ -1,10 +1,10 @@
-package com.soupulsar.modulith;
+package com.soupulsar;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SouPulsarModulithApplicationTests {
+class SouPulsarApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -1,5 +1,6 @@
 package com.soupulsar.infrastructure.persistence.repository.impl;
 
+import com.soupulsar.domain.model.enums.SpecialistType;
 import com.soupulsar.domain.model.payment.PaymentSplitRule;
 import com.soupulsar.domain.repository.PaymentSplitRuleRepository;
 import com.soupulsar.infrastructure.persistence.entity.payment.PaymentSplitRuleEntity;
@@ -7,6 +8,7 @@ import com.soupulsar.infrastructure.persistence.mapper.payment.PaymentSplitRuleM
 import com.soupulsar.infrastructure.persistence.repository.PaymentSplitRuleJpaRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,5 +27,16 @@ public class PaymentSplitRuleImpl implements PaymentSplitRuleRepository {
         PaymentSplitRuleEntity entity = PaymentSplitRuleMapper.toEntity(paymentSplitRule);
         PaymentSplitRuleEntity saved = repository.save(entity);
         return PaymentSplitRuleMapper.toModel(saved);
+    }
+
+    @Override
+    public List<PaymentSplitRule> findActiveApplicableRules(UUID specialistId, SpecialistType specialistType) {
+        var rules = repository.findActiveApplicableRules(specialistId, specialistType);
+        if (rules != null && !rules.isEmpty()) {
+            return rules.stream()
+                    .map(PaymentSplitRuleMapper::toModel)
+                    .toList();
+        }
+        return List.of();
     }
 }

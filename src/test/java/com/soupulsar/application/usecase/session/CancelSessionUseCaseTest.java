@@ -1,7 +1,6 @@
-package com.soupulsar.modulith.scheduling.application.usecase;
+package com.soupulsar.application.usecase.session;
 
 import com.soupulsar.application.dto.response.SessionResponse;
-import com.soupulsar.application.usecase.session.CancelSessionUseCase;
 import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.repository.SessionRepository;
 import org.junit.jupiter.api.Test;
