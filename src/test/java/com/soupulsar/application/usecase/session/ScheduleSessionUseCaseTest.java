@@ -1,8 +1,7 @@
-package com.soupulsar.modulith.scheduling.application.usecase;
+package com.soupulsar.application.usecase.session;
 
 import com.soupulsar.application.dto.request.ScheduleSessionRequest;
 import com.soupulsar.application.dto.response.ScheduleSessionResponse;
-import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
 import com.soupulsar.domain.event.SessionScheduledEvent;
 import com.soupulsar.domain.model.availability.Availability;
 import com.soupulsar.domain.model.session.Session;

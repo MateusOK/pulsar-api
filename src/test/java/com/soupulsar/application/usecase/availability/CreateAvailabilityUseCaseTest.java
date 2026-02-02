@@ -1,8 +1,7 @@
-package com.soupulsar.modulith.scheduling.application.usecase;
+package com.soupulsar.application.usecase.availability;
 
 import com.soupulsar.application.dto.request.CreateAvailabilityRequest;
 import com.soupulsar.application.dto.response.CreateAvailabilityResponse;
-import com.soupulsar.application.usecase.availability.CreateAvailabilityUseCase;
 import com.soupulsar.domain.model.availability.Availability;
 import com.soupulsar.domain.repository.AvailabilityRepository;
 import org.junit.jupiter.api.BeforeEach;
