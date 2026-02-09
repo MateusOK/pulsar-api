@@ -23,6 +23,7 @@ public class Payment {
     private UUID sessionId;
     private UUID specialistId;
     private UUID clientId;
+    private String externalReference;
 
     private PaymentAmounts amounts;
     private PaymentSplit split;
@@ -36,9 +37,6 @@ public class Payment {
     private LocalDateTime updatedAt;
 
     public static Payment create(UUID sessionId, UUID specialistId, UUID clientId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod) {
-
-        validateCreationParams(sessionId, specialistId, clientId, paymentMethod);
-        validateSplitParams(split, amounts);
         return Payment.builder()
                 .id(UUID.randomUUID())
                 .sessionId(sessionId)
@@ -52,13 +50,34 @@ public class Payment {
                 .build();
     }
 
-    public void markAsPending(){
+    public static Payment restore(UUID id, UUID sessionId, UUID specialistId, UUID clientId, String externalReference, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod, PaymentStatus paymentStatus, LocalDateTime paidAt, LocalDateTime createdAt, LocalDateTime refundedAt, LocalDateTime updatedAt) {
+        return Payment.builder()
+                .id(id)
+                .sessionId(sessionId)
+                .specialistId(specialistId)
+                .clientId(clientId)
+                .externalReference(externalReference)
+                .amounts(amounts)
+                .split(split)
+                .paymentMethod(paymentMethod)
+                .paymentStatus(paymentStatus)
+                .paidAt(paidAt)
+                .createdAt(createdAt)
+                .refundedAt(refundedAt)
+                .updatedAt(updatedAt)
+                .build();
+    }
+
+    public void markAsPending(String externalReference){
         if (paymentStatus != PaymentStatus.CREATED){
             throw new IllegalStateException("Only CREATED payments can be marked as PENDING");
-        } else {
-            this.paymentStatus = PaymentStatus.PENDING;
-            this.updatedAt = LocalDateTime.now();
+            }
+        if (externalReference != null && !externalReference.isBlank()){
+            throw new IllegalArgumentException("External reference cannot be null or blank when marking payment as PENDING");
         }
+        this.externalReference = externalReference;
+        this.paymentStatus = PaymentStatus.PENDING;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void markAsPaid(){

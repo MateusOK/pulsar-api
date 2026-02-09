@@ -68,4 +68,20 @@ public class Session {
         return this.startAt.isBefore(endAt) && startAt.isBefore(this.endAt);
     }
 
+    public boolean isAwaitingPayment(){
+        return this.status == SessionStatus.AWAITING_PAYMENT;
+    }
+
+    public boolean isCompleted(){
+        return this.status == SessionStatus.COMPLETED;
+    }
+
+    public boolean isCancelled(){
+        return this.status == SessionStatus.CANCELLED;
+    }
+
+    public boolean belongsTo(UUID clientId, UUID specialistId) {
+        return this.clientId.equals(clientId) && this.specialistId.equals(specialistId);
+    }
+
 }
