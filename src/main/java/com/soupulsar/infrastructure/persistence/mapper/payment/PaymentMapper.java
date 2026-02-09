@@ -14,6 +14,7 @@ public class PaymentMapper {
                 .sessionId(payment.getSessionId())
                 .specialistId(payment.getSpecialistId())
                 .clientId(payment.getClientId())
+                .externalReference(payment.getExternalReference())
                 .paymentAmounts(PaymentAmountsMapper.toEmbeddable(payment.getAmounts()))
                 .paymentSplit(PaymentSplitMapper.toEmbeddable(payment.getSplit()))
                 .paymentMethod(payment.getPaymentMethod())
@@ -25,15 +26,23 @@ public class PaymentMapper {
                 .build();
     }
 
-    public static Payment toModel(PaymentEntity entity) {
-        if (entity == null) return null;
-        return Payment.create(
-                entity.getSessionId(),
-                entity.getSpecialistId(),
-                entity.getClientId(),
-                PaymentAmountsMapper.toValueObject(entity.getPaymentAmounts()),
-                PaymentSplitMapper.toValueObject(entity.getPaymentSplit()),
-                entity.getPaymentMethod()
-        );
-    }
+        public static Payment toModel(PaymentEntity entity) {
+            if (entity == null) return null;
+
+            return Payment.restore(
+                    entity.getId(),
+                    entity.getSessionId(),
+                    entity.getSpecialistId(),
+                    entity.getClientId(),
+                    entity.getExternalReference(),
+                    PaymentAmountsMapper.toValueObject(entity.getPaymentAmounts()),
+                    PaymentSplitMapper.toValueObject(entity.getPaymentSplit()),
+                    entity.getPaymentMethod(),
+                    entity.getPaymentStatus(),
+                    entity.getPaidAt(),
+                    entity.getCreatedAt(),
+                    entity.getRefundedAt(),
+                    entity.getUpdatedAt()
+            );
+        }
 }

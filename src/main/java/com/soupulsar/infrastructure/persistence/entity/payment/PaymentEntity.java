@@ -37,6 +37,8 @@ public class PaymentEntity {
     @Column(nullable = false)
     private UUID clientId;
 
+    private String externalReference;
+
     @Embedded
     private PaymentAmountsEmbeddable paymentAmounts;
 
