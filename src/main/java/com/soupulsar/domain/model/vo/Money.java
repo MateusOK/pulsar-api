@@ -32,6 +32,8 @@ public record Money(BigDecimal value) implements Comparable<Money> {
         return value.compareTo(BigDecimal.ZERO) > 0;
     }
 
+    public Double toDouble() {return value.doubleValue();}
+
     @Override
     public int compareTo(Money other) {
         return this.value.compareTo(other.value);

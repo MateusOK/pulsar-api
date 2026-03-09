@@ -1,10 +1,9 @@
-package com.soupulsar.application.config;
+package com.soupulsar.infrastructure.gateway.asaas;
 
 import com.asaas.apisdk.AsaasSdk;
 import com.asaas.apisdk.config.ApiKeyAuthConfig;
 import com.asaas.apisdk.config.AsaasSdkConfig;
 import com.asaas.apisdk.config.RetryConfig;
-import com.asaas.apisdk.services.CustomerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +32,4 @@ public class AsaasConfig {
 
         return new AsaasSdk(asaasSdkConfig);
     }
-
-    @Bean
-    public CustomerService customerService(AsaasSdk asaasSdk) {
-        return asaasSdk.customer;
-    }
-
 }

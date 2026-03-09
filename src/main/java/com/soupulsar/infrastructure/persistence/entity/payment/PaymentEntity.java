@@ -9,7 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jdk.jfr.Timestamp;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -37,7 +36,7 @@ public class PaymentEntity {
     @Column(nullable = false)
     private UUID clientId;
 
-    private String externalReference;
+    private String externalPaymentId;
 
     @Embedded
     private PaymentAmountsEmbeddable paymentAmounts;
@@ -53,13 +52,11 @@ public class PaymentEntity {
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
-    @Timestamp
     private LocalDateTime paidAt;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Timestamp
     private LocalDateTime refundedAt;
 
     @UpdateTimestamp

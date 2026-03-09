@@ -59,6 +59,8 @@ public record RegistrationRequest(
         @Schema(description = "Professional registration number", example = "CRP 06/12345")
         RegistrationNumber registrationNumber,
         @Schema(description = "Specialist presentation details")
-        Presentation presentation
+        Presentation presentation,
+        @Schema(description = "External payout account ID for receiving payments", example = "acct_1Gqj58Lz0qyl6XyZ")
+        String externalPayoutAccountId
 ) {
 }

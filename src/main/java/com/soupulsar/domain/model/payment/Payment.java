@@ -23,7 +23,8 @@ public class Payment {
     private UUID sessionId;
     private UUID specialistId;
     private UUID clientId;
-    private String externalReference;
+    private String externalPaymentId;
+    private String paymentLink;
 
     private PaymentAmounts amounts;
     private PaymentSplit split;
@@ -37,6 +38,8 @@ public class Payment {
     private LocalDateTime updatedAt;
 
     public static Payment create(UUID sessionId, UUID specialistId, UUID clientId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod) {
+        validateSplitParams(split, amounts);
+        validateCreationParams(sessionId, specialistId, clientId, paymentMethod);
         return Payment.builder()
                 .id(UUID.randomUUID())
                 .sessionId(sessionId)
@@ -50,13 +53,13 @@ public class Payment {
                 .build();
     }
 
-    public static Payment restore(UUID id, UUID sessionId, UUID specialistId, UUID clientId, String externalReference, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod, PaymentStatus paymentStatus, LocalDateTime paidAt, LocalDateTime createdAt, LocalDateTime refundedAt, LocalDateTime updatedAt) {
+    public static Payment restore(UUID id, UUID sessionId, UUID specialistId, UUID clientId, String externalPaymentId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod, PaymentStatus paymentStatus, LocalDateTime paidAt, LocalDateTime createdAt, LocalDateTime refundedAt, LocalDateTime updatedAt) {
         return Payment.builder()
                 .id(id)
                 .sessionId(sessionId)
                 .specialistId(specialistId)
                 .clientId(clientId)
-                .externalReference(externalReference)
+                .externalPaymentId(externalPaymentId)
                 .amounts(amounts)
                 .split(split)
                 .paymentMethod(paymentMethod)
@@ -68,14 +71,19 @@ public class Payment {
                 .build();
     }
 
-    public void markAsPending(String externalReference){
+    public void markAsPending(String externalPaymentId, String paymentLink){
         if (paymentStatus != PaymentStatus.CREATED){
             throw new IllegalStateException("Only CREATED payments can be marked as PENDING");
-            }
-        if (externalReference != null && !externalReference.isBlank()){
+        }
+        // Require non-null/non-blank external reference and payment link when marking pending
+        if (externalPaymentId == null || externalPaymentId.isBlank()){
             throw new IllegalArgumentException("External reference cannot be null or blank when marking payment as PENDING");
         }
-        this.externalReference = externalReference;
+        if (paymentLink == null || paymentLink.isBlank()){
+            throw new IllegalArgumentException("Payment link cannot be null or blank when marking payment as PENDING");
+        }
+        this.externalPaymentId = externalPaymentId;
+        this.paymentLink = paymentLink;
         this.paymentStatus = PaymentStatus.PENDING;
         this.updatedAt = LocalDateTime.now();
     }
@@ -146,5 +154,21 @@ public class Payment {
         if (!split.totalAmount().equals(amounts.getFinalAmount())){
             throw new IllegalArgumentException("Payment split total must equal the final payment amount");
         }
+    }
+
+    public boolean isPending() {
+        return this.paymentStatus == PaymentStatus.PENDING;
+    }
+
+    public boolean isCreated() {
+        return this.paymentStatus == PaymentStatus.CREATED;
+    }
+
+    public boolean isPaid() {
+        return this.paymentStatus == PaymentStatus.PAID;
+    }
+
+    public boolean hasExternalPaymentId() {
+        return this.externalPaymentId != null && !this.externalPaymentId.isBlank();
     }
 }

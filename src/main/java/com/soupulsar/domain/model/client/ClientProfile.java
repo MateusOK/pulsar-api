@@ -16,6 +16,7 @@ public class ClientProfile {
     private final UUID userId;
     private final Date dateOfBirth;
     private EmergencyContact emergencyContact;
+    private String externalCustomerId;
 
 
     public static ClientProfile create(UUID userId, Date dateOfBirth, EmergencyContact emergencyContact) {
@@ -37,5 +38,16 @@ public class ClientProfile {
                 .dateOfBirth(dateOfBirth)
                 .emergencyContact(emergencyContact)
                 .build();
+    }
+    public boolean hasExternalCustomerId() {return this.externalCustomerId != null && !this.externalCustomerId.isBlank();}
+
+    public void attachExternalCustomerId(String externalCustomerId) {
+        if (this.externalCustomerId != null && !this.externalCustomerId.isBlank()) {
+            throw new IllegalStateException("External Customer Id is already attached");
+        }
+        if (externalCustomerId == null || externalCustomerId.isBlank()) {
+            throw new IllegalArgumentException("External Customer Id cannot be null or blank");
+        }
+        this.externalCustomerId = externalCustomerId;
     }
 }

@@ -11,10 +11,11 @@ public class PaymentMapper {
     public static PaymentEntity toEntity(Payment payment) {
         if (payment == null) return null;
         return PaymentEntity.builder()
+                .id(payment.getId())
                 .sessionId(payment.getSessionId())
                 .specialistId(payment.getSpecialistId())
                 .clientId(payment.getClientId())
-                .externalReference(payment.getExternalReference())
+                .externalPaymentId(payment.getExternalPaymentId())
                 .paymentAmounts(PaymentAmountsMapper.toEmbeddable(payment.getAmounts()))
                 .paymentSplit(PaymentSplitMapper.toEmbeddable(payment.getSplit()))
                 .paymentMethod(payment.getPaymentMethod())
@@ -34,7 +35,7 @@ public class PaymentMapper {
                     entity.getSessionId(),
                     entity.getSpecialistId(),
                     entity.getClientId(),
-                    entity.getExternalReference(),
+                    entity.getExternalPaymentId(),
                     PaymentAmountsMapper.toValueObject(entity.getPaymentAmounts()),
                     PaymentSplitMapper.toValueObject(entity.getPaymentSplit()),
                     entity.getPaymentMethod(),

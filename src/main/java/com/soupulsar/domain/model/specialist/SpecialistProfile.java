@@ -25,10 +25,11 @@ public class SpecialistProfile {
     private final SpecialistType specialistType;
     private Money sessionPrice;
     private Presentation presentation;
+    private String externalPayoutAccountId;
 
 
     public static SpecialistProfile create(UUID userId, RegistrationNumber registrationNumber, Presentation presentation,
-                                           SpecialistType specialistType, Money sessionPrice) {
+                                           SpecialistType specialistType, Money sessionPrice, String externalPayoutAccountId) {
         if (userId == null) throw new IllegalArgumentException("User ID cannot be null");
         return SpecialistProfile.builder()
                 .profileId(UUID.randomUUID())
@@ -37,15 +38,21 @@ public class SpecialistProfile {
                 .presentation(presentation)
                 .specialistType(specialistType)
                 .sessionPrice(sessionPrice)
+                .externalPayoutAccountId(externalPayoutAccountId)
                 .build();
     }
 
-    public static SpecialistProfile restore(UUID profileId, UUID userId, RegistrationNumber registrationNumber ,Presentation presentation) {
+    public static SpecialistProfile restore(UUID profileId, UUID userId, RegistrationNumber registrationNumber, Presentation presentation, String externalPayoutAccountId) {
         return SpecialistProfile.builder()
                 .profileId(profileId)
                 .userId(userId)
                 .registrationNumber(registrationNumber)
                 .presentation(presentation)
+                .externalPayoutAccountId(externalPayoutAccountId)
                 .build();
+    }
+
+    public boolean canReceivePayments(){
+        return externalPayoutAccountId != null && !externalPayoutAccountId.isBlank();
     }
 }

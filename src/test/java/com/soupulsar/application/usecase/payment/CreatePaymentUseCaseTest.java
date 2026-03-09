@@ -5,12 +5,12 @@ import com.soupulsar.domain.exceptions.PaymentSplitRuleNotFoundException;
 import com.soupulsar.domain.exceptions.UserNotFoundException;
 import com.soupulsar.domain.model.payment.Payment;
 import com.soupulsar.domain.model.payment.PaymentSplitRule;
+import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.model.specialist.SpecialistProfile;
+import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.model.vo.Money;
 import com.soupulsar.domain.model.vo.Percentage;
-import com.soupulsar.domain.repository.PaymentRepository;
-import com.soupulsar.domain.repository.PaymentSplitRuleRepository;
-import com.soupulsar.domain.repository.SpecialistProfileRepository;
+import com.soupulsar.domain.repository.*;
 import com.soupulsar.domain.model.enums.PaymentMethod;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +46,12 @@ class CreatePaymentUseCaseTest {
     @Mock
     private SpecialistProfileRepository specialistProfileRepository;
 
+    @Mock
+    private SessionRepository sessionRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private CreatePaymentUseCase useCase;
 
@@ -66,8 +72,18 @@ class CreatePaymentUseCaseTest {
                 PaymentMethod.CREDIT_CARD
         );
 
+        Session session = mock(Session.class);
+        when(sessionRepository.findBySessionId(sessionId)).thenReturn(Optional.of(session));
+        when(session.isAwaitingPayment()).thenReturn(true);
+        when(session.belongsTo(clientId, specialistId)).thenReturn(true);
+
+        User specialistUser = mock(User.class);
+        User clientUser = mock(User.class);
+        when(userRepository.findById(specialistId)).thenReturn(Optional.of(specialistUser));
+        when(userRepository.findById(clientId)).thenReturn(Optional.of(clientUser));
+
         SpecialistProfile profile = mock(SpecialistProfile.class);
-        when(specialistProfileRepository.findById((specialistId))).thenReturn(Optional.of(profile));
+        when(specialistProfileRepository.findById(specialistId)).thenReturn(Optional.of(profile));
 
         PaymentSplitRule rule = mock(PaymentSplitRule.class);
         Percentage percentage = mock(Percentage.class);
@@ -77,7 +93,6 @@ class CreatePaymentUseCaseTest {
         Money platformAmount = new Money(new BigDecimal("9.00"));
         when(percentage.applyTo((finalAmount))).thenReturn(platformAmount);
 
-        // return a single rule so comparator/min won't need to compare priorities
         when(paymentSplitRuleRepository.findActiveApplicableRules(eq(specialistId), any()))
                 .thenReturn(List.of(rule));
 
@@ -87,7 +102,6 @@ class CreatePaymentUseCaseTest {
         verify(paymentRepository, times(1)).save(captor.capture());
 
         Payment saved = captor.getValue();
-        // Basic assertions that something was saved; fields checks depend on Payment getters presence.
         assertNotNull(saved);
     }
 
@@ -108,7 +122,10 @@ class CreatePaymentUseCaseTest {
                 PaymentMethod.CREDIT_CARD
         );
 
-        when(specialistProfileRepository.findById((specialistId))).thenReturn(Optional.empty());
+        Session session = mock(Session.class);
+        when(sessionRepository.findBySessionId(sessionId)).thenReturn(Optional.of(session));
+
+        when(userRepository.findById(specialistId)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> useCase.execute(request));
         verify(paymentRepository, never()).save(any());
@@ -131,8 +148,18 @@ class CreatePaymentUseCaseTest {
                 PaymentMethod.CREDIT_CARD
         );
 
+        Session session = mock(Session.class);
+        when(sessionRepository.findBySessionId(sessionId)).thenReturn(Optional.of(session));
+        when(session.isAwaitingPayment()).thenReturn(true);
+        when(session.belongsTo(clientId, specialistId)).thenReturn(true);
+
         SpecialistProfile profile = mock(SpecialistProfile.class);
-        when(specialistProfileRepository.findById((specialistId))).thenReturn(Optional.of(profile));
+        when(specialistProfileRepository.findById(specialistId)).thenReturn(Optional.of(profile));
+
+        User specialistUser = mock(User.class);
+        User clientUser = mock(User.class);
+        when(userRepository.findById(specialistId)).thenReturn(Optional.of(specialistUser));
+        when(userRepository.findById(clientId)).thenReturn(Optional.of(clientUser));
 
         when(paymentSplitRuleRepository.findActiveApplicableRules(eq(specialistId), any()))
                 .thenReturn(List.of());
