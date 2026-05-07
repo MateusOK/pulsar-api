@@ -34,7 +34,7 @@ public class CreatePaymentUseCase {
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
 
-    public void execute(CreatePaymentRequest request) {
+    public UUID execute(CreatePaymentRequest request) {
 
         validateCreationParams(request.sessionId(), request.specialistId(), request.clientId());
 
@@ -62,6 +62,7 @@ public class CreatePaymentUseCase {
                 request.clientId(),
                 amounts.getFinalAmount()
         );
+        return payment.getId();
     }
 
     private PaymentSplitRule getPaymentSplitRule(UUID specialistId) {

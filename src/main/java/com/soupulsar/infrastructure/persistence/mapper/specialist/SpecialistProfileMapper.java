@@ -17,6 +17,7 @@ public class SpecialistProfileMapper {
         entity.setRegistrationNumber(RegistrationNumberMapper.toEmbeddable(specialistProfile.getRegistrationNumber()));
         entity.setSessionPrice(MoneyMapper.toEmbeddable(specialistProfile.getSessionPrice()));
         entity.setSpecialistType(specialistProfile.getSpecialistType());
+        entity.setExternalPayoutAccountId(specialistProfile.getExternalPayoutAccountId());
         entity.setPresentation(PresentationMapper.toEmbeddable(specialistProfile.getPresentation()));
 
         return entity;
@@ -31,6 +32,7 @@ public class SpecialistProfileMapper {
                 .specialistType(entity.getSpecialistType())
                 .sessionPrice(MoneyMapper.toValueObject(entity.getSessionPrice()))
                 .presentation(PresentationMapper.toValueObject(entity.getPresentation()))
+                .externalPayoutAccountId(entity.getExternalPayoutAccountId())
                 .build();
     }
 }

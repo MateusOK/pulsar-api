@@ -9,5 +9,6 @@ public interface PaymentRepository {
 
     Optional<Payment> findById(UUID id);
     Payment save(Payment payment);
+    Optional<Payment> findByExternalPaymentId(String externalPaymentId);
 
 }

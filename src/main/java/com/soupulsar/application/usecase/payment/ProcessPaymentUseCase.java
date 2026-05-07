@@ -4,14 +4,13 @@ import com.soupulsar.application.dto.response.ExternalPaymentResult;
 import com.soupulsar.application.dto.response.PaymentProcessedResponse;
 import com.soupulsar.application.interfaces.CustomerGateway;
 import com.soupulsar.application.interfaces.PaymentGateway;
+import com.soupulsar.domain.exceptions.SessionNotFoundException;
 import com.soupulsar.domain.model.client.ClientProfile;
 import com.soupulsar.domain.model.payment.Payment;
+import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.model.specialist.SpecialistProfile;
 import com.soupulsar.domain.model.user.User;
-import com.soupulsar.domain.repository.ClientProfileRepository;
-import com.soupulsar.domain.repository.PaymentRepository;
-import com.soupulsar.domain.repository.SpecialistProfileRepository;
-import com.soupulsar.domain.repository.UserRepository;
+import com.soupulsar.domain.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,7 @@ public class ProcessPaymentUseCase {
     private final UserRepository userRepository;
     private final CustomerGateway customerGateway;
     private final PaymentGateway paymentGateway;
+    private final SessionRepository sessionRepository;
 
     @Transactional
     public PaymentProcessedResponse execute(UUID paymentId) {
@@ -53,6 +53,9 @@ public class ProcessPaymentUseCase {
         SpecialistProfile specialistProfile = specialistProfileRepository.findById(payment.getSpecialistId())
                 .orElseThrow(() -> new RuntimeException("Specialist not found: " + payment.getSpecialistId()));
 
+        Session session = sessionRepository.findBySessionId(payment.getSessionId())
+                .orElseThrow(() -> new SessionNotFoundException(payment.getSessionId()));
+
         if (!specialistProfile.canReceivePayments()){
             log.error("Specialist {} cannot receive payments. Aborting payment processing.", specialistProfile.getUserId());
             throw new IllegalStateException("Specialist cannot receive payments");
@@ -65,7 +68,7 @@ public class ProcessPaymentUseCase {
             clientProfileRepository.save(clientProfile);
         }
 
-        ExternalPaymentResult externalResult = paymentGateway.processPayment(payment, clientProfile, specialistProfile);
+        ExternalPaymentResult externalResult = paymentGateway.processPayment(payment, clientProfile, specialistProfile, session);
         payment.markAsPending(externalResult.externalReference(), externalResult.paymentUrl());
         paymentRepository.save(payment);
 

@@ -14,6 +14,7 @@ public class ClientProfileMapper {
         ClientProfileEntity entity = new ClientProfileEntity();
         entity.setUserId(clientProfile.getUserId());
         entity.setDateOfBirth(clientProfile.getDateOfBirth());
+        entity.setExternalCustomerId(clientProfile.getExternalCustomerId());
         entity.setEmergencyContact(EmergencyContactMapper.toEmbeddable(clientProfile.getEmergencyContact()));
         return entity;
     }
@@ -24,10 +25,10 @@ public class ClientProfileMapper {
         return ClientProfile.builder()
                 .userId(entity.getUserId())
                 .dateOfBirth(entity.getDateOfBirth())
+                .externalCustomerId(entity.getExternalCustomerId())
                 .emergencyContact(EmergencyContactMapper.toValueObject(entity.getEmergencyContact()))
                 .build();
 
 
     }
-
 }

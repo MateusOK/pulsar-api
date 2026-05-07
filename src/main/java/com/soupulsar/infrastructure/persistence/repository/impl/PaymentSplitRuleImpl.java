@@ -7,11 +7,13 @@ import com.soupulsar.infrastructure.persistence.entity.payment.PaymentSplitRuleE
 import com.soupulsar.infrastructure.persistence.mapper.payment.PaymentSplitRuleMapper;
 import com.soupulsar.infrastructure.persistence.repository.PaymentSplitRuleJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 @RequiredArgsConstructor
 public class PaymentSplitRuleImpl implements PaymentSplitRuleRepository {
 

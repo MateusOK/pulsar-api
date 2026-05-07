@@ -1,5 +1,6 @@
 package com.soupulsar.domain.model.payment;
 
+import com.soupulsar.domain.model.enums.GatewayPaymentEvent;
 import com.soupulsar.domain.model.enums.PaymentMethod;
 import com.soupulsar.domain.model.enums.PaymentStatus;
 import com.soupulsar.domain.model.vo.PaymentAmounts;
@@ -75,7 +76,6 @@ public class Payment {
         if (paymentStatus != PaymentStatus.CREATED){
             throw new IllegalStateException("Only CREATED payments can be marked as PENDING");
         }
-        // Require non-null/non-blank external reference and payment link when marking pending
         if (externalPaymentId == null || externalPaymentId.isBlank()){
             throw new IllegalArgumentException("External reference cannot be null or blank when marking payment as PENDING");
         }
@@ -103,6 +103,14 @@ public class Payment {
             throw new IllegalStateException("Only PENDING payments can be marked as FAILED");
         }
         this.paymentStatus = PaymentStatus.FAILED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsOverdue(){
+        if (paymentStatus != PaymentStatus.PENDING){
+            throw new IllegalStateException("Only PENDING payments can be marked as OVERDUE");
+        }
+        this.paymentStatus = PaymentStatus.OVERDUE;
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -153,6 +161,41 @@ public class Payment {
     private static void validateSplitParams(PaymentSplit split, PaymentAmounts amounts) {
         if (!split.totalAmount().equals(amounts.getFinalAmount())){
             throw new IllegalArgumentException("Payment split total must equal the final payment amount");
+        }
+    }
+
+    public boolean handleGatewayEvent(GatewayPaymentEvent event){
+
+        switch (event){
+            case PAID -> {
+                if (paymentStatus == PaymentStatus.PENDING || paymentStatus == PaymentStatus.OVERDUE){
+                    markAsPaid();
+                    return true;
+                }
+                return false;
+            }
+            case OVERDUE -> {
+                if (paymentStatus == PaymentStatus.PENDING){
+                    markAsOverdue();
+                    return true;
+                }
+                return false;
+            }
+            case FAILED -> {
+                if (paymentStatus == PaymentStatus.PENDING){
+                    markAsFailed();
+                    return true;
+                }
+                return false;
+            }
+            case REFUNDED -> {
+                if (paymentStatus == PaymentStatus.PAID) {
+                    markAsRefunded(LocalDateTime.now().plusDays(1));
+                    return true;
+                }
+                return false;
+            }
+            default -> {return false;}
         }
     }
 

@@ -8,11 +8,13 @@ import com.soupulsar.application.dto.response.ExternalPaymentResult;
 import com.soupulsar.application.interfaces.PaymentGateway;
 import com.soupulsar.domain.model.client.ClientProfile;
 import com.soupulsar.domain.model.payment.Payment;
+import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.model.specialist.SpecialistProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -23,13 +25,13 @@ public class AsaasPaymentGateway implements PaymentGateway {
     private final AsaasSdk asaasSdk;
 
     @Override
-    public ExternalPaymentResult processPayment(Payment payment, ClientProfile client, SpecialistProfile specialist) {
+    public ExternalPaymentResult processPayment(Payment payment, ClientProfile client, SpecialistProfile specialist, Session session) {
 
         try {
             var split = buildPaymentSplitRequest(payment, specialist);
-            var paymentRequest = buildPaymentRequest(payment, client, split);
+            var paymentRequest = buildPaymentRequest(payment, client, split, session);
             var paymentResponse = asaasSdk.payment.createNewPayment(paymentRequest);
-            return new ExternalPaymentResult(paymentResponse.getId(), paymentResponse.getPaymentLink());
+            return new ExternalPaymentResult(paymentResponse.getId(), paymentResponse.getInvoiceUrl());
         }
         catch (Exception e) {
             log.error("Failed to process payment in Asaas for payment {}", payment.getId(), e);
@@ -48,13 +50,19 @@ public class AsaasPaymentGateway implements PaymentGateway {
         }
     }
 
-    private PaymentSaveRequestDto buildPaymentRequest(Payment payment, ClientProfile client, PaymentSplitRequestDto split) {
+    private PaymentSaveRequestDto buildPaymentRequest(Payment payment, ClientProfile client, PaymentSplitRequestDto split, Session session) {
+
+        LocalDate dueDate = session.getStartAt().minusHours(24).toLocalDate();
+        if (dueDate.isBefore(LocalDate.now())) {
+            dueDate = LocalDate.now().plusDays(1);
+        }
         return PaymentSaveRequestDto.builder()
                 .customer(client.getExternalCustomerId())
                 .billingType(PaymentSaveRequestBillingType.fromValue(payment.getPaymentMethod().toString()))
                 .value(payment.getAmounts().getFinalAmount().toDouble())
                 .externalReference(payment.getId().toString())
                 .split(List.of(split))
+                .dueDate(dueDate.toString())
                 .build();
     }
 
