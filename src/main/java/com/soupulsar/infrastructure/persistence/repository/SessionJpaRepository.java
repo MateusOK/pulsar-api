@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SessionJpaRepository extends JpaRepository<SessionEntity, Long> {
+public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID> {
 
     @Query("""
     SELECT s FROM SessionEntity s

@@ -39,9 +39,6 @@ public class UserEntity {
     @Column(nullable = false)
     private String telephone;
 
-    @Column(unique = true)
-    private String asaasCustomerId;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;

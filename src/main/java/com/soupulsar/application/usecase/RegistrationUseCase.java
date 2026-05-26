@@ -54,7 +54,8 @@ public class RegistrationUseCase {
                     request.registrationNumber(),
                     request.presentation(),
                     request.specialistType(),
-                    request.sessionPrice()
+                    request.sessionPrice(),
+                    request.externalPayoutAccountId()
             );
             specialistProfileRepository.save(specialistProfile);
         } else {

@@ -1,0 +1,4 @@
+asaas:
+  apiKey: ${ASAAS_API_KEY:$api-key}
+  baseUrl: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com}
+  webhookToken: ${ASAAS_WEBHOOK_TOKEN:webhook-token}

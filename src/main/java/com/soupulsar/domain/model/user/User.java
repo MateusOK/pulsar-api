@@ -26,7 +26,6 @@ public class User {
     private Address address;
     private final UserRole role;
     private UserStatus status;
-    private final String asaasCustomerId;
 
 
     public static User create(String name, String cpf, String telephone, String email, String passwordHash, UserRole role, Address address) {
@@ -74,9 +73,5 @@ public class User {
             throw new IllegalStateException("User is already inactive.");
         }
         this.status = UserStatus.INACTIVE;
-    }
-
-    public boolean hasAsaasCustomerId() {
-        return this.asaasCustomerId != null && !this.asaasCustomerId.isBlank();
     }
 }

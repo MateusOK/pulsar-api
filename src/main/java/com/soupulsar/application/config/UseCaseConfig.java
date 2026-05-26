@@ -1,9 +1,14 @@
 package com.soupulsar.application.config;
 
+import com.soupulsar.application.interfaces.CustomerGateway;
+import com.soupulsar.application.interfaces.PaymentGateway;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
 import com.soupulsar.application.usecase.*;
 import com.soupulsar.application.usecase.availability.CreateAvailabilityUseCase;
+import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
+import com.soupulsar.application.usecase.payment.HandlePaymentWebhookUseCase;
+import com.soupulsar.application.usecase.payment.ProcessPaymentUseCase;
 import com.soupulsar.application.usecase.session.CancelSessionUseCase;
 import com.soupulsar.application.usecase.session.CompleteSessionUseCase;
 import com.soupulsar.application.usecase.session.ConfirmSessionUseCase;
@@ -108,5 +113,24 @@ public class UseCaseConfig {
     @Bean
     public ChangePasswordUseCase changePasswordUseCase(UserRepository userRepository, PasswordEncoder passwordEncoder, SecurityUtils securityUtils) {
         return new ChangePasswordUseCase(userRepository, passwordEncoder, securityUtils);
+    }
+
+    @Bean
+    public CreatePaymentUseCase createPaymentUseCase(PaymentRepository paymentRepository, PaymentSplitRuleRepository paymentSplitRuleRepository,
+                                         SpecialistProfileRepository specialistProfileRepository, UserRepository userRepository, SessionRepository sessionRepository) {
+        return new CreatePaymentUseCase(paymentRepository, paymentSplitRuleRepository, specialistProfileRepository, userRepository, sessionRepository);
+    }
+
+    @Bean
+    public ProcessPaymentUseCase processPaymentUseCase(PaymentRepository paymentRepository, ClientProfileRepository clientProfileRepository,
+                                                       SpecialistProfileRepository specialistProfileRepository, UserRepository userRepository,
+                                                       CustomerGateway customerGateway, PaymentGateway paymentGateway, SessionRepository sessionRepository) {
+        return new ProcessPaymentUseCase(paymentRepository, clientProfileRepository, specialistProfileRepository,userRepository,
+                customerGateway, paymentGateway, sessionRepository);
+    }
+
+    @Bean
+    HandlePaymentWebhookUseCase handlePaymentWebhookUseCase(WebhookEventRepository webhookRepository, PaymentRepository paymentRepository, ConfirmSessionUseCase confirmSessionUseCase) {
+        return new HandlePaymentWebhookUseCase(webhookRepository, paymentRepository, confirmSessionUseCase);
     }
 }

@@ -17,8 +17,9 @@ import java.util.UUID;
 public class ClientProfileEntity {
 
     @Id
-    private  UUID userId;
-    private  Date dateOfBirth;
+    private UUID userId;
+    private Date dateOfBirth;
+    private String externalCustomerId;
 
     @Embedded
     private EmergencyContactEmbeddable emergencyContact;

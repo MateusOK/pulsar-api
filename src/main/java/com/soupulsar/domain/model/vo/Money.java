@@ -1,15 +1,24 @@
 package com.soupulsar.domain.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public record Money(BigDecimal value) implements Comparable<Money> {
 
+    @JsonCreator
     public Money {
         if (value == null)
             throw new IllegalArgumentException("Money value cannot be null");
 
         value = value.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    @JsonValue
+    public BigDecimal value() {
+        return value;
     }
 
     public static Money zero() {
@@ -31,6 +40,8 @@ public record Money(BigDecimal value) implements Comparable<Money> {
     public boolean isPositive() {
         return value.compareTo(BigDecimal.ZERO) > 0;
     }
+
+    public Double toDouble() {return value.doubleValue();}
 
     @Override
     public int compareTo(Money other) {

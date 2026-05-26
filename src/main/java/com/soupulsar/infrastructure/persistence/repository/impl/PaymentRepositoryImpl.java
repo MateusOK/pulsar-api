@@ -6,11 +6,13 @@ import com.soupulsar.infrastructure.persistence.entity.payment.PaymentEntity;
 import com.soupulsar.infrastructure.persistence.mapper.payment.PaymentMapper;
 import com.soupulsar.infrastructure.persistence.repository.PaymentJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Repository
 public class PaymentRepositoryImpl implements PaymentRepository {
 
     private final PaymentJpaRepository paymentJpaRepository;
@@ -25,5 +27,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         PaymentEntity entity = PaymentMapper.toEntity(payment);
         PaymentEntity saved = paymentJpaRepository.save(entity);
         return PaymentMapper.toModel(saved);
+    }
+
+    @Override
+    public Optional<Payment> findByExternalPaymentId(String externalPaymentId) {
+        return paymentJpaRepository.findByExternalPaymentId(externalPaymentId).map(PaymentMapper::toModel);
     }
 }
