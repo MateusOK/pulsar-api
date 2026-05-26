@@ -10,6 +10,7 @@ import com.soupulsar.domain.model.client.ClientProfile;
 import com.soupulsar.domain.model.payment.Payment;
 import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.model.specialist.SpecialistProfile;
+import com.soupulsar.infrastructure.gateway.asaas.client.AsaasClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AsaasPaymentGateway implements PaymentGateway {
 
-    private final AsaasSdk asaasSdk;
+    private final AsaasClient asaasSdk;
 
     @Override
     public ExternalPaymentResult processPayment(Payment payment, ClientProfile client, SpecialistProfile specialist, Session session) {
@@ -30,8 +31,8 @@ public class AsaasPaymentGateway implements PaymentGateway {
         try {
             var split = buildPaymentSplitRequest(payment, specialist);
             var paymentRequest = buildPaymentRequest(payment, client, split, session);
-            var paymentResponse = asaasSdk.payment.createNewPayment(paymentRequest);
-            return new ExternalPaymentResult(paymentResponse.getId(), paymentResponse.getInvoiceUrl());
+            var paymentResponse = asaasSdk.createPayment(paymentRequest);
+            return new ExternalPaymentResult(paymentResponse.id(), paymentResponse.invoiceUrl());
         }
         catch (Exception e) {
             log.error("Failed to process payment in Asaas for payment {}", payment.getId(), e);
@@ -42,8 +43,8 @@ public class AsaasPaymentGateway implements PaymentGateway {
     @Override
     public String retrieveSinglePaymentLink(String paymentExternalReference) {
         try {
-            var response = asaasSdk.payment.retrieveASinglePayment(paymentExternalReference);
-            return response.getPaymentLink();
+            var response = asaasSdk.retrieveSinglePayment(paymentExternalReference);
+            return response.paymentLink();
         } catch (Exception e) {
             log.error("Failed to retrieve payment link from Asaas for payment reference {}", paymentExternalReference, e);
             throw new RuntimeException("Failed to retrieve payment link from Asaas", e);

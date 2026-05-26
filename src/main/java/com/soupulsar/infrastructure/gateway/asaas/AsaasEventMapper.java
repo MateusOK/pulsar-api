@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 public class AsaasEventMapper {
 
     public GatewayPaymentEvent map(String event) {
+        if (event == null || event.isBlank()) return GatewayPaymentEvent.IGNORE;
 
-        return switch (event) {
+        String normalized = event.toUpperCase();
+
+        return switch (normalized) {
 
             case "PAYMENT_CONFIRMED",
                  "PAYMENT_RECEIVED" -> GatewayPaymentEvent.PAID;

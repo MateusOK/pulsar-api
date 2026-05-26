@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class AsaasWebhookSignatureValidator {
 
-    @Value("${asaas.webhookToken}")
-    private String webhookToken;
+    private final String webhookToken;
+
+    public AsaasWebhookSignatureValidator(@Value("${asaas.webhookToken}") String webhookToken) {
+        this.webhookToken = webhookToken;
+    }
 
     public boolean isValid(String tokenFromHeader){
         if (tokenFromHeader == null || tokenFromHeader.isEmpty()){
