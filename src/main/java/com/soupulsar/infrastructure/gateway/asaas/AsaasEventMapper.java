@@ -9,7 +9,7 @@ public class AsaasEventMapper {
     public GatewayPaymentEvent map(String event) {
         if (event == null || event.isBlank()) return GatewayPaymentEvent.IGNORE;
 
-        String normalized = event.toUpperCase();
+        String normalized = event.trim().toUpperCase();
 
         return switch (normalized) {
 

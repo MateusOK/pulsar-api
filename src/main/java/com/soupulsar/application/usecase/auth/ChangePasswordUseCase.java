@@ -1,14 +1,11 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.auth;
 
 import com.soupulsar.application.dto.request.ChangePasswordRequest;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ChangePasswordUseCase {

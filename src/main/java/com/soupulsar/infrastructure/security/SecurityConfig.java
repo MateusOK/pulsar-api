@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/reset-password/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/payments/webhook").permitAll()

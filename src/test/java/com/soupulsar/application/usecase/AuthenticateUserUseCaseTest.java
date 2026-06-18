@@ -4,6 +4,7 @@ import com.soupulsar.application.dto.request.AuthUserRequest;
 import com.soupulsar.application.dto.response.AuthUserResponse;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.application.usecase.auth.AuthenticateUserUseCase;
 import com.soupulsar.domain.exceptions.UserNotFoundException;
 import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.model.enums.UserRole;

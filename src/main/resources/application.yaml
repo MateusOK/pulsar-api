@@ -1,6 +1,6 @@
 spring:
   application:
-    name: SouPulsar Modulith
+    name: SouPulsar
 
   mvc:
     pathmatch:
@@ -31,9 +31,17 @@ spring:
     init:
       mode: always
 
+app:
+  frontend:
+    url: ${FRONTEND_URL:https://soupulsar.com}
+
 asaas:
-  apiKey: ${ASAAS_API_KEY:api-key-here}
-  baseUrl: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
+  apiKey: ${ASAAS_API_KEY}
+  webhookToken: ${ASAAS_WEBHOOK_TOKEN}
+
+resend:
+  apiKey: ${RESEND_API_KEY}
+  fromEmail: ${RESEND_FROM_EMAIL:onboarding@resend.dev}
 
 springdoc:
   packages-to-scan:

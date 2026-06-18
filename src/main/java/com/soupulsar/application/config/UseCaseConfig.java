@@ -1,10 +1,13 @@
 package com.soupulsar.application.config;
 
 import com.soupulsar.application.interfaces.CustomerGateway;
+import com.soupulsar.application.interfaces.EmailGateway;
 import com.soupulsar.application.interfaces.PaymentGateway;
+import com.soupulsar.application.interfaces.TokenGenerator;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
 import com.soupulsar.application.usecase.*;
+import com.soupulsar.application.usecase.auth.*;
 import com.soupulsar.application.usecase.availability.CreateAvailabilityUseCase;
 import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
 import com.soupulsar.application.usecase.payment.HandlePaymentWebhookUseCase;
@@ -18,6 +21,7 @@ import com.soupulsar.application.usecase.specialist.GetDailyAvailabilityUseCase;
 import com.soupulsar.application.usecase.specialist.GetSpecialistDetailsUseCase;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -130,7 +134,20 @@ public class UseCaseConfig {
     }
 
     @Bean
-    HandlePaymentWebhookUseCase handlePaymentWebhookUseCase(WebhookEventRepository webhookRepository, PaymentRepository paymentRepository, ConfirmSessionUseCase confirmSessionUseCase) {
+    public HandlePaymentWebhookUseCase handlePaymentWebhookUseCase(WebhookEventRepository webhookRepository, PaymentRepository paymentRepository, ConfirmSessionUseCase confirmSessionUseCase) {
         return new HandlePaymentWebhookUseCase(webhookRepository, paymentRepository, confirmSessionUseCase);
     }
+
+    @Bean
+    public RequestPasswordResetUseCase requestPasswordResetUseCase (UserRepository userRepository, TokenGenerator tokenGenerator,
+                                                                    PasswordResetTokenRepository passwordResetTokenRepository, EmailGateway emailGateway,
+                                                                    @Value("${app.frontend.url}") String passwordResetUrl) {
+        return new RequestPasswordResetUseCase(userRepository, tokenGenerator, passwordResetTokenRepository, emailGateway, passwordResetUrl);
+    }
+
+    @Bean
+    public ResetPasswordUseCase resetPasswordUseCase (PasswordEncoder passwordEncoder, UserRepository userRepository, PasswordResetTokenRepository passwordResetTokenRepository) {
+        return new ResetPasswordUseCase(passwordEncoder, userRepository, passwordResetTokenRepository);
+    }
+
 }

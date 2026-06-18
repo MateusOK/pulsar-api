@@ -5,7 +5,11 @@ import com.soupulsar.application.dto.request.GetAllUsersRequest;
 import com.soupulsar.application.dto.request.UpdateUserProfileRequest;
 import com.soupulsar.application.dto.response.UserProfileResponse;
 import com.soupulsar.application.dto.response.UserResponse;
-import com.soupulsar.application.usecase.*;
+import com.soupulsar.application.usecase.GetAllUsersUseCase;
+import com.soupulsar.application.usecase.GetUserByIdUseCase;
+import com.soupulsar.application.usecase.GetUserProfileUseCase;
+import com.soupulsar.application.usecase.UpdateUserProfileUseCase;
+import com.soupulsar.application.usecase.auth.ChangePasswordUseCase;
 import com.soupulsar.domain.model.enums.UserRole;
 import com.soupulsar.domain.model.enums.UserStatus;
 import com.soupulsar.domain.model.user.User;
@@ -18,7 +22,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
