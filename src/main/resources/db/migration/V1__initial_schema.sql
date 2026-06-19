@@ -7,9 +7,6 @@ CREATE TABLE public.academic_history (
                                          academic_history character varying(255)
 );
 
-
-ALTER TABLE public.academic_history OWNER TO postgres;
-
 --
 -- Name: availabilities; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -23,9 +20,6 @@ CREATE TABLE public.availabilities (
                                        day_of_week character varying(255) NOT NULL,
                                        CONSTRAINT availabilities_day_of_week_check CHECK (((day_of_week)::text = ANY ((ARRAY['MONDAY'::character varying, 'TUESDAY'::character varying, 'WEDNESDAY'::character varying, 'THURSDAY'::character varying, 'FRIDAY'::character varying, 'SATURDAY'::character varying, 'SUNDAY'::character varying])::text[])))
 );
-
-
-ALTER TABLE public.availabilities OWNER TO postgres;
 
 --
 -- Name: availabilities_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -55,9 +49,6 @@ CREATE TABLE public.client_profiles (
                                         CONSTRAINT client_profiles_relationship_degree_check CHECK (((relationship_degree)::text = ANY ((ARRAY['CONJUGE'::character varying, 'FILHO'::character varying, 'IRMAO'::character varying, 'MAE'::character varying, 'NETO'::character varying, 'PAI'::character varying, 'SOBRINHO'::character varying, 'TIO'::character varying, 'AMIGO'::character varying, 'CUNHADO'::character varying, 'GENRO'::character varying, 'NORA'::character varying, 'SOGRO'::character varying, 'AVO'::character varying, 'COMPANHEIRO'::character varying, 'OUTRO'::character varying])::text[])))
 );
 
-
-ALTER TABLE public.client_profiles OWNER TO postgres;
-
 --
 -- Name: password_reset_tokens; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -70,9 +61,6 @@ CREATE TABLE public.password_reset_tokens (
                                               user_id uuid,
                                               token character varying(255)
 );
-
-
-ALTER TABLE public.password_reset_tokens OWNER TO postgres;
 
 --
 -- Name: payment_split_rules; Type: TABLE; Schema: public; Owner: postgres
@@ -89,9 +77,6 @@ CREATE TABLE public.payment_split_rules (
                                             CONSTRAINT payment_split_rules_scope_check CHECK (((scope)::text = ANY ((ARRAY['SPECIALIST'::character varying, 'SPECIALIST_TYPE'::character varying, 'GLOBAL'::character varying])::text[]))),
     CONSTRAINT payment_split_rules_specialist_type_check CHECK (((specialist_type)::text = ANY ((ARRAY['PSICOLOGO'::character varying, 'PSIQUIATRA'::character varying, 'TERAPEUTA'::character varying, 'EDUCADOR_FISICO'::character varying, 'NUTRICIONISTA'::character varying, 'ASSESSOR_FINANCEIRO'::character varying])::text[])))
 );
-
-
-ALTER TABLE public.payment_split_rules OWNER TO postgres;
 
 --
 -- Name: payments; Type: TABLE; Schema: public; Owner: postgres
@@ -119,9 +104,6 @@ CREATE TABLE public.payments (
     CONSTRAINT payments_payment_status_check CHECK (((payment_status)::text = ANY ((ARRAY['CREATED'::character varying, 'PENDING'::character varying, 'PAID'::character varying, 'OVERDUE'::character varying, 'FAILED'::character varying, 'REFUNDED'::character varying, 'CANCELLED'::character varying])::text[])))
 );
 
-
-ALTER TABLE public.payments OWNER TO postgres;
-
 --
 -- Name: sessions; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -136,9 +118,6 @@ CREATE TABLE public.sessions (
                                  CONSTRAINT sessions_status_check CHECK (((status)::text = ANY ((ARRAY['SCHEDULING'::character varying, 'AWAITING_PAYMENT'::character varying, 'CONFIRMED'::character varying, 'CANCELLED'::character varying, 'COMPLETED'::character varying])::text[])))
 );
 
-
-ALTER TABLE public.sessions OWNER TO postgres;
-
 --
 -- Name: specialist_payout_accounts; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -152,9 +131,6 @@ CREATE TABLE public.specialist_payout_accounts (
                                                    provider character varying(255),
                                                    CONSTRAINT specialist_payout_accounts_provider_check CHECK (((provider)::text = 'ASAAS'::text))
 );
-
-
-ALTER TABLE public.specialist_payout_accounts OWNER TO postgres;
 
 --
 -- Name: specialist_profiles; Type: TABLE; Schema: public; Owner: postgres
@@ -173,9 +149,6 @@ CREATE TABLE public.specialist_profiles (
                                             CONSTRAINT specialist_profiles_specialist_type_check CHECK (((specialist_type)::text = ANY ((ARRAY['PSICOLOGO'::character varying, 'PSIQUIATRA'::character varying, 'TERAPEUTA'::character varying, 'EDUCADOR_FISICO'::character varying, 'NUTRICIONISTA'::character varying, 'ASSESSOR_FINANCEIRO'::character varying])::text[])))
 );
 
-
-ALTER TABLE public.specialist_profiles OWNER TO postgres;
-
 --
 -- Name: specializations; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -185,9 +158,6 @@ CREATE TABLE public.specializations (
                                         specialization character varying(255)
 );
 
-
-ALTER TABLE public.specializations OWNER TO postgres;
-
 --
 -- Name: therapeutic_approaches; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -196,9 +166,6 @@ CREATE TABLE public.therapeutic_approaches (
                                                specialist_id uuid NOT NULL,
                                                therapeutic_approach character varying(255)
 );
-
-
-ALTER TABLE public.therapeutic_approaches OWNER TO postgres;
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
@@ -222,9 +189,6 @@ CREATE TABLE public.users (
     CONSTRAINT users_status_check CHECK (((status)::text = ANY ((ARRAY['ACTIVE'::character varying, 'INACTIVE'::character varying])::text[])))
 );
 
-
-ALTER TABLE public.users OWNER TO postgres;
-
 --
 -- Name: webhook_events; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -237,9 +201,6 @@ CREATE TABLE public.webhook_events (
                                        external_payment_id character varying(255) NOT NULL,
                                        CONSTRAINT webhook_events_event_type_check CHECK (((event_type)::text = ANY ((ARRAY['PAID'::character varying, 'OVERDUE'::character varying, 'FAILED'::character varying, 'REFUNDED'::character varying, 'IGNORE'::character varying])::text[])))
 );
-
-
-ALTER TABLE public.webhook_events OWNER TO postgres;
 
 --
 -- Name: availabilities availabilities_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
