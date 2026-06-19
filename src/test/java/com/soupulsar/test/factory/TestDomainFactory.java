@@ -8,12 +8,7 @@ import com.soupulsar.domain.model.enums.PaymentMethod;
 import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.model.specialist.SpecialistProfile;
 import com.soupulsar.domain.model.user.User;
-import com.soupulsar.domain.model.vo.Address;
-import com.soupulsar.domain.model.vo.Money;
-import com.soupulsar.domain.model.vo.PaymentAmounts;
-import com.soupulsar.domain.model.vo.PaymentSplit;
-import com.soupulsar.domain.model.vo.Presentation;
-import com.soupulsar.domain.model.vo.RegistrationNumber;
+import com.soupulsar.domain.model.vo.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,7 +30,7 @@ public final class TestDomainFactory {
             .neighbourhood("neigh")
             .build();
 
-    private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2026, 10, 1, 10, 0);
+    private static final LocalDateTime FIXED_TIME = LocalDateTime.of(2030, 1, 1, 10, 0);
 
     public static User simpleUser() {
         return User.create(DEFAULT_NAME, DEFAULT_CPF, DEFAULT_TELEPHONE, DEFAULT_EMAIL, DEFAULT_PASSWORD, UserRole.CLIENT,

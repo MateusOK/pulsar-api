@@ -1,7 +1,7 @@
 package com.soupulsar.application.usecase.payment;
 
 import com.soupulsar.application.dto.request.CreatePaymentRequest;
-import com.soupulsar.application.exceptions.InvalidSessionStateForPaymentException;
+import com.soupulsar.domain.exceptions.InvalidSessionStateForPaymentException;
 import com.soupulsar.domain.exceptions.PaymentSplitRuleNotFoundException;
 import com.soupulsar.domain.exceptions.SessionNotFoundException;
 import com.soupulsar.domain.exceptions.UserNotFoundException;
