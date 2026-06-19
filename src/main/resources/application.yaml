@@ -1,39 +1,35 @@
 spring:
   application:
-    name: SouPulsar Modulith
-
-  mvc:
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
+    name: SouPulsar
 
   security:
     jwt:
-        secret: ${JWT_SECRET:jwt-super-secret-key-place-holder}
-        expiration: ${JWT_EXPIRATION:3600000}
+      secret: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
 
   datasource:
-    url: jdbc:h2:mem:soupulsar;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
+  flyway:
+    enabled: true
 
   jpa:
-    show-sql: true
-    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: validate
 
-  sql:
-    init:
-      mode: always
+app:
+  frontend:
+    url: ${FRONTEND_URL}
 
 asaas:
-  apiKey: ${ASAAS_API_KEY:api-key-here}
-  baseUrl: ${ASAAS_BASE_URL:https://api-sandbox.asaas.com/v3}
+  apiKey: ${ASAAS_API_KEY}
+  webhookToken: ${ASAAS_WEBHOOK_TOKEN}
+
+resend:
+  apiKey: ${RESEND_API_KEY}
+  fromEmail: ${RESEND_FROM_EMAIL}
 
 springdoc:
   packages-to-scan:
@@ -41,18 +37,6 @@ springdoc:
   paths-to-match: /api/**
   api-docs:
     path: /v3/api-docs
-    enabled: true
-  swagger-ui:
-    path: /swagger
-    enabled: true
-    operationsSorter: method
-    tags-sorter: alpha
-    display-request-duration: true
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
-  model-converters:
-    pageable-converter:
-      enabled: false
 
 management:
   endpoints:
@@ -60,10 +44,3 @@ management:
       base-path: /actuator
       exposure:
         include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
-      probes:
-        enabled: true
-    shutdown:
-      access: none

@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.auth;
 
 import com.soupulsar.application.dto.request.AuthUserRequest;
 import com.soupulsar.application.dto.response.AuthUserResponse;

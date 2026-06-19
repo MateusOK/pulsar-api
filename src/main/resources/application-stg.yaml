@@ -1,0 +1,14 @@
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
