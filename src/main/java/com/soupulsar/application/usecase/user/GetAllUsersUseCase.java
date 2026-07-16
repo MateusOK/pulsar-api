@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.user;
 
 import com.soupulsar.application.dto.request.GetAllUsersRequest;
 import com.soupulsar.domain.model.user.User;

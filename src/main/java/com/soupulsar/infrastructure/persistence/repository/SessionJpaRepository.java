@@ -1,5 +1,6 @@
 package com.soupulsar.infrastructure.persistence.repository;
 
+import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.infrastructure.persistence.entity.session.SessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -7,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,4 +48,10 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
     List<SessionEntity> findBySpecialistIdAndDate(@Param("specialistId") UUID specialistId, @Param("date") LocalDate date);
 
     Optional<SessionEntity> findBySessionId(UUID sessionId);
+
+    Optional<SessionEntity> findFirstBySpecialistIdAndStatusAndStartAtGreaterThanEqualOrderByStartAtAsc(UUID specialistId, SessionStatus status, LocalDateTime startAt);
+
+    Long countBySpecialistIdAndStatusInAndStartAtBetween(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
+
+
 }
