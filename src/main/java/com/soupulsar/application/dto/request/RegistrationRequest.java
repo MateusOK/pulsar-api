@@ -2,15 +2,18 @@ package com.soupulsar.application.dto.request;
 
 import com.soupulsar.domain.model.enums.SpecialistType;
 import com.soupulsar.domain.model.enums.UserRole;
-import com.soupulsar.domain.model.vo.*;
+import com.soupulsar.domain.model.vo.Address;
+import com.soupulsar.domain.model.vo.EmergencyContact;
+import com.soupulsar.domain.model.vo.Money;
+import com.soupulsar.domain.model.vo.Presentation;
+import com.soupulsar.domain.model.vo.RegistrationNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import org.hibernate.validator.constraints.br.CPF;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Schema(description = "Request DTO for user registration")
 public record RegistrationRequest(
@@ -47,7 +50,8 @@ public record RegistrationRequest(
 
         // Client info
         @Schema(description = "User's date of birth", example = "1990-01-01")
-        Date dateOfBirth,
+        @Past
+        LocalDate dateOfBirth,
         @Schema(description = "User's emergency contact information")
         EmergencyContact emergencyContact,
 

@@ -3,6 +3,7 @@ package com.soupulsar.domain.model.client;
 import com.soupulsar.domain.model.vo.EmergencyContact;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,12 +15,12 @@ public class ClientProfile {
 
     private final UUID profileId;
     private final UUID userId;
-    private final Date dateOfBirth;
+    private final LocalDate dateOfBirth;
     private EmergencyContact emergencyContact;
     private String externalCustomerId;
 
 
-    public static ClientProfile create(UUID userId, Date dateOfBirth, EmergencyContact emergencyContact) {
+    public static ClientProfile create(UUID userId, LocalDate dateOfBirth, EmergencyContact emergencyContact) {
         if (userId == null) throw new IllegalArgumentException("User ID cannot be null");
         if (dateOfBirth == null) throw new IllegalArgumentException("Date of birth cannot be null");
         if (emergencyContact == null) throw new IllegalArgumentException("Emergency contact cannot be null");
@@ -31,7 +32,7 @@ public class ClientProfile {
                 .build();
     }
 
-    public static ClientProfile restore(UUID profileId, UUID userId, Date dateOfBirth, EmergencyContact emergencyContact) {
+    public static ClientProfile restore(UUID profileId, UUID userId, LocalDate dateOfBirth, EmergencyContact emergencyContact) {
         return ClientProfile.builder()
                 .profileId(profileId)
                 .userId(userId)

@@ -2,10 +2,12 @@ package com.soupulsar.api.controllers;
 
 import com.soupulsar.application.dto.request.GetAllSpecialistRequest;
 import com.soupulsar.application.dto.response.DailyAvailabilityResponse;
+import com.soupulsar.application.dto.response.DashboardResponse;
 import com.soupulsar.application.dto.response.GetAllSpecialistsResponse;
 import com.soupulsar.application.dto.response.SpecialistDetailsResponse;
 import com.soupulsar.application.usecase.specialist.GetAllSpecialistsUseCase;
 import com.soupulsar.application.usecase.specialist.GetDailyAvailabilityUseCase;
+import com.soupulsar.application.usecase.specialist.GetSpecialistDashboardUseCase;
 import com.soupulsar.application.usecase.specialist.GetSpecialistDetailsUseCase;
 import com.soupulsar.domain.model.enums.SpecialistType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +37,7 @@ public class SpecialistsController {
     private final GetAllSpecialistsUseCase getAllSpecialistsUseCase;
     private final GetSpecialistDetailsUseCase getSpecialistDetailsUseCase;
     private final GetDailyAvailabilityUseCase getDailyAvailabilityUseCase;
+    private final GetSpecialistDashboardUseCase getSpecialistDashboardUseCase;
 
     @Operation(summary = "Get All Specialists", description = "Retrieve a paginated list of specialists with optional filtering by type and price range")
     @ApiResponses(value = {
@@ -70,6 +74,12 @@ public class SpecialistsController {
     @GetMapping("/{specialistId}/availability/{date}")
     public ResponseEntity<DailyAvailabilityResponse> getSpecialistDailyAvailability(@PathVariable UUID specialistId, @PathVariable LocalDate date) {
         var response =getDailyAvailabilityUseCase.execute(specialistId, date);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardResponse> getSpecialistDashboard() {
+        var response = getSpecialistDashboardUseCase.execute();
         return ResponseEntity.ok(response);
     }
 }

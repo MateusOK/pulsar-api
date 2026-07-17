@@ -11,6 +11,7 @@ import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.model.vo.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public final class TestDomainFactory {
     }
 
     public static ClientProfile client(UUID userId) {
-        return ClientProfile.builder().profileId(UUID.randomUUID()).userId(userId).dateOfBirth(new Date()).build();
+        return ClientProfile.builder().profileId(UUID.randomUUID()).userId(userId).dateOfBirth(LocalDate.now()).build();
     }
 
     public static ClientProfile clientWithExternal(UUID userId, String externalId) {

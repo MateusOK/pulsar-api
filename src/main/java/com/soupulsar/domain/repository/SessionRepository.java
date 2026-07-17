@@ -1,13 +1,11 @@
 package com.soupulsar.domain.repository;
 
+import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.domain.model.session.Session;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public interface SessionRepository {
 
@@ -22,4 +20,8 @@ public interface SessionRepository {
     Optional<Session> findBySessionId(UUID sessionId);
 
     List<Session> findOverlappingSessions(UUID uuid, LocalDateTime startAt, LocalDateTime endAt);
+
+    Optional<Session> findNextSession(UUID specialistId, LocalDateTime currentDateTime);
+
+    Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
 }
