@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase.specialist;
+package com.soupulsar.application.specialist;
 
 import com.soupulsar.application.dto.response.SpecialistDetailsResponse;
 import com.soupulsar.domain.repository.SessionRepository;

@@ -1,5 +1,7 @@
 package com.soupulsar.infrastructure.persistence.repository.impl;
 
+import com.soupulsar.application.specialist.calendar.CalendarSessionResponse;
+import com.soupulsar.application.specialist.shared.daterange.DateRange;
 import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.repository.SessionRepository;
@@ -79,5 +81,24 @@ public class SessionRepositoryImpl implements SessionRepository {
     @Override
     public Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt) {
         return jpaRepository.countBySpecialistIdAndStatusInAndStartAtBetween(specialistId, List.copyOf(statuses), startAt, endAt);
+    }
+
+    @Override
+    public List<Session> findBySpecialistIdAndPeriod(UUID specialistId, DateRange dateRange) {
+        return jpaRepository.findBySpecialistIdAndStartAtBetweenOrderByStartAtAsc(specialistId, dateRange.start(), dateRange.end())
+                .stream()
+                .map(SessionMapper::toModel)
+                .toList();
+    }
+
+    @Override
+    public List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, DateRange period) {
+        return jpaRepository.findCalendarSessions(specialistId, period.start(), period.end());
+    }
+
+    @Override
+    public Optional<Session> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId) {
+        return jpaRepository.findBySessionIdAndSpecialistId(sessionId, specialistId)
+                .map(SessionMapper::toModel);
     }
 }

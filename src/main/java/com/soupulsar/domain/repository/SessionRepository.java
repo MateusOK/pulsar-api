@@ -1,5 +1,7 @@
 package com.soupulsar.domain.repository;
 
+import com.soupulsar.application.specialist.calendar.CalendarSessionResponse;
+import com.soupulsar.application.specialist.shared.daterange.DateRange;
 import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.domain.model.session.Session;
 
@@ -24,4 +26,10 @@ public interface SessionRepository {
     Optional<Session> findNextSession(UUID specialistId, LocalDateTime currentDateTime);
 
     Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
+
+    List<Session> findBySpecialistIdAndPeriod(UUID specialistId, DateRange period);
+
+    List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, DateRange period);
+
+    Optional<Session> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId);
 }
