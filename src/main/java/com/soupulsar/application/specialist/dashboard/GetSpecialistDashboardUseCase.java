@@ -1,9 +1,9 @@
-package com.soupulsar.application.usecase.specialist;
+package com.soupulsar.application.specialist.dashboard;
 
-import com.soupulsar.application.dto.response.DashboardResponse;
-import com.soupulsar.application.dto.response.NextAppointmentResponse;
-import com.soupulsar.application.dto.response.TodaySummaryResponse;
-import com.soupulsar.application.dto.response.WeekSummaryResponse;
+import com.soupulsar.application.specialist.shared.WhatsAppLinkGenerator;
+import com.soupulsar.application.specialist.shared.daterange.DateRangeFactory;
+import com.soupulsar.application.specialist.shared.summary.SessionStatisticsCalculator;
+import com.soupulsar.application.specialist.shared.summary.SessionSummary;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.exceptions.UserNotFoundException;
 import com.soupulsar.domain.model.enums.SessionStatus;
@@ -26,9 +26,10 @@ public class GetSpecialistDashboardUseCase {
     private final SessionRepository  sessionRepository;
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
+    private final DateRangeFactory  dateRangeFactory;
+    private final SessionStatisticsCalculator sessionStatisticsCalculator;
+    private final WhatsAppLinkGenerator whatsAppLinkGenerator;
     private final Clock clock;
-
-    private static final String WHATSAPP_BASE_URL = "https://wa.me/";
 
     public DashboardResponse execute() {
 
@@ -66,80 +67,28 @@ public class GetSpecialistDashboardUseCase {
                 .startsAt(session.getStartAt())
                 .endsAt(session.getEndAt())
                 .patientName(patient.getName())
-                .whatsappUrl(generateWhatsAppUrl(patient.getTelephone()))
+                .whatsappUrl(whatsAppLinkGenerator.generate(patient.getTelephone()))
                 .build();
     }
 
     private TodaySummaryResponse getTodaySummary(UUID specialistId, LocalDateTime currentDateTime) {
 
-        LocalDate today = currentDateTime.toLocalDate();
-
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
-
-        SessionSummary summary = getSessionSummary(specialistId, startOfDay, endOfDay);
+        SessionSummary summary = sessionStatisticsCalculator.calculate(specialistId, dateRangeFactory.today(currentDateTime.toLocalDate()));
 
         return TodaySummaryResponse.builder()
                 .completedAppointments(summary.completed())
                 .remainingAppointments(summary.confirmed())
-                .totalAppointments(summary.completed() + summary.confirmed())
+                .totalAppointments(summary.total())
                 .build();
     }
 
     private WeekSummaryResponse getWeekSummary(UUID specialistId, LocalDateTime currentDateTime) {
 
-        DateRange currentWeek = getCurrentWeekRange(currentDateTime);
-
-        SessionSummary summary = getSessionSummary(specialistId, currentWeek.start(), currentWeek.end());
+        SessionSummary summary = sessionStatisticsCalculator.calculate(specialistId, dateRangeFactory.week(currentDateTime.toLocalDate()));
 
         return WeekSummaryResponse.builder()
                 .completedAppointments(summary.completed())
-                .totalAppointments(summary.completed() + summary.confirmed())
+                .totalAppointments(summary.total())
                 .build();
     }
-
-    private String generateWhatsAppUrl(String phoneNumber) {
-
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            return null;
-        }
-
-        return WHATSAPP_BASE_URL + phoneNumber.replaceAll("[^\\d]", ""); // Remove non-digit characters
-    }
-
-    private Long countCompletedSessions(UUID specialistId, LocalDateTime startTime, LocalDateTime endTime) {
-        return sessionRepository.countSessionsByStatus(specialistId, List.of(SessionStatus.COMPLETED), startTime, endTime);
-    }
-
-    private Long countConfirmedSessions(UUID specialistId, LocalDateTime startTime, LocalDateTime endTime) {
-        return sessionRepository.countSessionsByStatus(specialistId, List.of(SessionStatus.CONFIRMED), startTime, endTime);
-    }
-
-    private DateRange getCurrentWeekRange(LocalDateTime currentDateTime) {
-
-        LocalDate today = currentDateTime.toLocalDate();
-
-        return new DateRange(
-                today.with(DayOfWeek.MONDAY).atStartOfDay(),
-                today.with(DayOfWeek.SUNDAY).atTime(LocalTime.MAX)
-        );
-    }
-
-    private SessionSummary getSessionSummary(UUID specialistId, LocalDateTime startTime, LocalDateTime endTime) {
-
-        long completed = countCompletedSessions(specialistId, startTime, endTime);
-        long confirmed = countConfirmedSessions(specialistId, startTime, endTime);
-
-        return new SessionSummary(completed, confirmed);
-    }
-
-    private record SessionSummary(
-            long completed,
-            long confirmed
-    ){}
-
-    private record DateRange(
-            LocalDateTime start,
-            LocalDateTime end
-    ){}
 }

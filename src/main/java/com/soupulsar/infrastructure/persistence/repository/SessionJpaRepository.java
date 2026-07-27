@@ -1,5 +1,6 @@
 package com.soupulsar.infrastructure.persistence.repository;
 
+import com.soupulsar.application.specialist.calendar.CalendarSessionResponse;
 import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.infrastructure.persistence.entity.session.SessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,5 +54,25 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
 
     Long countBySpecialistIdAndStatusInAndStartAtBetween(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
 
+    List<SessionEntity> findBySpecialistIdAndStartAtBetweenOrderByStartAtAsc(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
 
+    @Query("""
+        SELECT new com.soupulsar.application.specialist.calendar.CalendarSessionResponse(
+            s.sessionId,
+            s.startAt,
+            s.endAt,
+            s.status,
+            s.clientId,
+            u.name
+        )
+        FROM SessionEntity s
+        JOIN UserEntity u
+             ON u.userId = s.clientId
+        WHERE s.specialistId = :specialistId
+        AND s.startAt BETWEEN :startAt AND :endAt
+        ORDER BY s.startAt ASC
+       """)
+    List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
+
+    Optional<SessionEntity> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId);
 }

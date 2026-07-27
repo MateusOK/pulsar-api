@@ -1,4 +1,4 @@
-package com.soupulsar.application.dto.response;
+package com.soupulsar.application.specialist.dashboard;
 
 import lombok.Builder;
 
