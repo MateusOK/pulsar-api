@@ -1,5 +1,8 @@
 package com.soupulsar.infrastructure.persistence.repository.impl;
 
+import com.soupulsar.application.specialist.calendar.CalendarSessionResponse;
+import com.soupulsar.application.specialist.shared.daterange.DateRange;
+import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.domain.model.session.Session;
 import com.soupulsar.domain.repository.SessionRepository;
 import com.soupulsar.infrastructure.persistence.repository.SessionJpaRepository;
@@ -10,11 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -71,5 +70,35 @@ public class SessionRepositoryImpl implements SessionRepository {
                 .stream()
                 .map(SessionMapper::toModel)
                 .toList();
+    }
+
+    @Override
+    public Optional<Session> findNextSession(UUID specialistId, LocalDateTime currentDateTime) {
+        return jpaRepository.findFirstBySpecialistIdAndStatusAndStartAtGreaterThanEqualOrderByStartAtAsc(specialistId, SessionStatus.CONFIRMED, currentDateTime)
+                .map(SessionMapper::toModel);
+    }
+
+    @Override
+    public Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt) {
+        return jpaRepository.countBySpecialistIdAndStatusInAndStartAtBetween(specialistId, List.copyOf(statuses), startAt, endAt);
+    }
+
+    @Override
+    public List<Session> findBySpecialistIdAndPeriod(UUID specialistId, DateRange dateRange) {
+        return jpaRepository.findBySpecialistIdAndStartAtBetweenOrderByStartAtAsc(specialistId, dateRange.start(), dateRange.end())
+                .stream()
+                .map(SessionMapper::toModel)
+                .toList();
+    }
+
+    @Override
+    public List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, DateRange period) {
+        return jpaRepository.findCalendarSessions(specialistId, period.start(), period.end());
+    }
+
+    @Override
+    public Optional<Session> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId) {
+        return jpaRepository.findBySessionIdAndSpecialistId(sessionId, specialistId)
+                .map(SessionMapper::toModel);
     }
 }

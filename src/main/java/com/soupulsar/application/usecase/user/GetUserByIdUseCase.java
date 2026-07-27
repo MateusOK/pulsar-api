@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.user;
 
 import com.soupulsar.application.dto.response.UserResponse;
 import com.soupulsar.domain.repository.UserRepository;

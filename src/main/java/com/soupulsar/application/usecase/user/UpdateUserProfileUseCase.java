@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.user;
 
 import com.soupulsar.application.dto.request.UpdateUserProfileRequest;
 import com.soupulsar.application.utils.SecurityUtils;

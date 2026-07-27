@@ -6,7 +6,11 @@ import com.soupulsar.application.interfaces.PaymentGateway;
 import com.soupulsar.application.interfaces.TokenGenerator;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
-import com.soupulsar.application.usecase.*;
+import com.soupulsar.application.specialist.calendar.GetSessionDetailsUseCase;
+import com.soupulsar.application.specialist.calendar.GetSpecialistCalendarUseCase;
+import com.soupulsar.application.specialist.shared.WhatsAppLinkGenerator;
+import com.soupulsar.application.specialist.shared.daterange.DateRangeFactory;
+import com.soupulsar.application.specialist.shared.summary.SessionStatisticsCalculator;
 import com.soupulsar.application.usecase.auth.*;
 import com.soupulsar.application.usecase.availability.CreateAvailabilityUseCase;
 import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
@@ -16,9 +20,14 @@ import com.soupulsar.application.usecase.session.CancelSessionUseCase;
 import com.soupulsar.application.usecase.session.CompleteSessionUseCase;
 import com.soupulsar.application.usecase.session.ConfirmSessionUseCase;
 import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
-import com.soupulsar.application.usecase.specialist.GetAllSpecialistsUseCase;
-import com.soupulsar.application.usecase.specialist.GetDailyAvailabilityUseCase;
-import com.soupulsar.application.usecase.specialist.GetSpecialistDetailsUseCase;
+import com.soupulsar.application.specialist.GetAllSpecialistsUseCase;
+import com.soupulsar.application.specialist.GetDailyAvailabilityUseCase;
+import com.soupulsar.application.specialist.dashboard.GetSpecialistDashboardUseCase;
+import com.soupulsar.application.specialist.GetSpecialistDetailsUseCase;
+import com.soupulsar.application.usecase.user.GetAllUsersUseCase;
+import com.soupulsar.application.usecase.user.GetUserByIdUseCase;
+import com.soupulsar.application.usecase.user.GetUserProfileUseCase;
+import com.soupulsar.application.usecase.user.UpdateUserProfileUseCase;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.repository.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +35,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.Clock;
 
 @Configuration
 public class UseCaseConfig {
@@ -150,4 +161,20 @@ public class UseCaseConfig {
         return new ResetPasswordUseCase(passwordEncoder, userRepository, passwordResetTokenRepository);
     }
 
+    @Bean
+    public GetSpecialistDashboardUseCase getSpecialistDashboardUseCase(SessionRepository sessionRepository, UserRepository userRepository, SecurityUtils securityUtils,
+                                                                       Clock clock, SessionStatisticsCalculator sessionStatisticsCalculator, DateRangeFactory  dateRangeFactory, WhatsAppLinkGenerator  whatsAppLinkGenerator) {
+        return new GetSpecialistDashboardUseCase(sessionRepository, userRepository, securityUtils, dateRangeFactory, sessionStatisticsCalculator, whatsAppLinkGenerator, clock);
+    }
+
+    @Bean
+    public GetSpecialistCalendarUseCase getSpecialistCalendarUseCase(SecurityUtils securityUtils, SessionRepository sessionRepository,
+                                                                 SessionStatisticsCalculator sessionStatisticsCalculator, DateRangeFactory dateRangeFactory, Clock clock) {
+        return new GetSpecialistCalendarUseCase(securityUtils, sessionRepository, sessionStatisticsCalculator, dateRangeFactory, clock);
+    }
+
+    @Bean
+    public GetSessionDetailsUseCase getSessionDetailsUseCase(SecurityUtils securityUtils, SessionRepository sessionRepository, UserRepository userRepository, WhatsAppLinkGenerator whatsAppLinkGenerator) {
+        return new GetSessionDetailsUseCase(securityUtils, sessionRepository, userRepository, whatsAppLinkGenerator);
+    }
 }

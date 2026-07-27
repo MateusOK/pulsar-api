@@ -1,4 +1,4 @@
-package com.soupulsar.application.usecase;
+package com.soupulsar.application.usecase.user;
 
 import com.soupulsar.application.dto.response.AddressResponse;
 import com.soupulsar.application.dto.response.ClientProfileResponse;
@@ -12,7 +12,6 @@ import com.soupulsar.domain.repository.ClientProfileRepository;
 import com.soupulsar.domain.repository.SpecialistProfileRepository;
 import com.soupulsar.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.UUID;
