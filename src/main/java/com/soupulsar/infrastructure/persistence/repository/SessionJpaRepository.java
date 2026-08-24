@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -75,4 +77,28 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
     List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
 
     Optional<SessionEntity> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId);
+
+
+    @Query(value = """
+        SELECT COUNT(*)
+        FROM sessions s
+        WHERE s.specialist_id = :specialistId
+                AND s.status = 'CONFIRMED'
+                AND s.start_at >= CURRENT_TIMESTAMP
+                AND EXTRACT(ISODOW FROM s.start_at) = :dayOfWeek
+                AND CAST(s.start_at AS time) < :endTime
+                AND CAST(s.end_at AS time) > :startTime
+        """, nativeQuery = true)
+    long countConflictingFutureSessionsForAvailability(@Param("specialistId") UUID specialistId, @Param("dayOfWeek") DayOfWeek dayOfWeek, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime);
+
+    @Query(value = """
+        SELECT COUNT(*)
+        FROM SessionEntity s
+        WHERE s.specialistId = :specialistId
+                AND s.status = 'CONFIRMED'
+                AND s.startAt >= CURRENT_TIMESTAMP
+                AND s.startAt < :endAt
+                AND s.endAt > :startAt
+        """)
+    long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
 }

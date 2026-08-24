@@ -31,6 +31,10 @@ import org.springframework.context.annotation.Configuration;
                         description = "Local Development Server"
                 ),
                 @Server(
+                        url = "https://api-stg.soupulsar.com",
+                        description = "Staging Server"
+                ),
+                @Server(
                         url = "Not yet",
                         description = "Production Server"
                 )

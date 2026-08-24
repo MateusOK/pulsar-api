@@ -1,4 +1,4 @@
-package com.soupulsar.infrastructure.persistence.mapper;
+package com.soupulsar.infrastructure.persistence.mapper.availability;
 
 import com.soupulsar.domain.model.availability.Availability;
 import com.soupulsar.infrastructure.persistence.entity.availability.AvailabilityEntity;
@@ -10,7 +10,7 @@ public class AvailabilityMapper {
 
     public static AvailabilityEntity toEntity(Availability availability) {
         AvailabilityEntity entity = new AvailabilityEntity();
-        entity.setUuid(availability.getId());
+        entity.setId(availability.getId());
         entity.setSpecialistId(availability.getSpecialistId());
         entity.setDayOfWeek(availability.getDayOfWeek());
         entity.setStartTime(availability.getStartTime());
@@ -18,14 +18,14 @@ public class AvailabilityMapper {
         return entity;
     }
 
-    public static  Availability toModel(AvailabilityEntity entity) {
-        return new Availability(
-                entity.getUuid(),
+    public static Availability toModel(AvailabilityEntity entity) {
+        return Availability.restore(
+                entity.getId(),
                 entity.getSpecialistId(),
                 entity.getDayOfWeek(),
+                entity.isEnabled(),
                 entity.getStartTime(),
                 entity.getEndTime()
         );
     }
-
 }

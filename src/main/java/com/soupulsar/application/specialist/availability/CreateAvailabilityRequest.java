@@ -1,4 +1,4 @@
-package com.soupulsar.application.dto.request;
+package com.soupulsar.application.specialist.availability;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
