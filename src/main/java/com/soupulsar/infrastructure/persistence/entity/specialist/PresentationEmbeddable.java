@@ -5,7 +5,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +24,6 @@ public final class PresentationEmbeddable {
     private String personalDescription;
     private String presentationVideoUrl;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String base64Image;
 

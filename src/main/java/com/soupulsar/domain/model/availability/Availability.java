@@ -1,5 +1,8 @@
 package com.soupulsar.domain.model.availability;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
@@ -12,31 +15,59 @@ import java.util.UUID;
  */
 
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Availability {
 
     private final UUID id;
     private final UUID specialistId;
     private final DayOfWeek dayOfWeek;
-    private final LocalTime startTime;
-    private final LocalTime endTime;
+    private boolean enabled;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public Availability(UUID id, UUID specialistId, DayOfWeek dayOfWeek,
-                             LocalTime startTime, LocalTime endTime) {
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("End time must be after start time");
-        }
-        this.id = id;
-        this.specialistId = specialistId;
-        this.dayOfWeek = dayOfWeek;
+
+    public static Availability create(UUID specialistId, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        validate(startTime, endTime);
+        return new AvailabilityBuilder()
+                .id(UUID.randomUUID())
+                .specialistId(specialistId)
+                .dayOfWeek(dayOfWeek)
+                .enabled(true)
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
+    }
+
+    public static Availability restore(UUID id, UUID specialistId, DayOfWeek dayOfWeek, boolean enabled, LocalTime startTime, LocalTime endTime) {
+        return new Availability(id, specialistId, dayOfWeek, enabled, startTime, endTime);
+    }
+
+    public void update(LocalTime startTime, LocalTime endTime) {
+        validate(startTime, endTime);
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    /**
-     * Checks if a given time falls within the availability period.
-     */
-    public boolean isWithinAvailability(DayOfWeek day, LocalTime time) {
-        return this.dayOfWeek == day && !time.isBefore(startTime) && !time.isAfter(endTime);
+    public void enable(){
+        this.enabled = true;
     }
 
+    public void disable(){
+        this.enabled = false;
+    }
+
+    public boolean overlaps(Availability other) {
+
+        if (!this.dayOfWeek.equals(other.dayOfWeek)) {
+            return false;
+        }
+        return startTime.isBefore(other.endTime) && endTime.isAfter(other.startTime);
+    }
+
+    private static void validate(LocalTime startTime, LocalTime endTime) {
+        if (!endTime.isAfter(startTime)) {
+            throw new IllegalArgumentException("Start time must be before end time");
+        }
+    }
 }

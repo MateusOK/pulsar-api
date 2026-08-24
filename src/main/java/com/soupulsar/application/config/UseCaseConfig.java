@@ -6,13 +6,16 @@ import com.soupulsar.application.interfaces.PaymentGateway;
 import com.soupulsar.application.interfaces.TokenGenerator;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.application.specialist.availability.*;
+import com.soupulsar.application.specialist.block.CreateAvailabilityBlockUseCase;
+import com.soupulsar.application.specialist.block.DeleteAvailabilityBlockUseCase;
+import com.soupulsar.application.specialist.block.GetSpecialistAvailabilityBlocksUseCase;
 import com.soupulsar.application.specialist.calendar.GetSessionDetailsUseCase;
 import com.soupulsar.application.specialist.calendar.GetSpecialistCalendarUseCase;
 import com.soupulsar.application.specialist.shared.WhatsAppLinkGenerator;
 import com.soupulsar.application.specialist.shared.daterange.DateRangeFactory;
 import com.soupulsar.application.specialist.shared.summary.SessionStatisticsCalculator;
 import com.soupulsar.application.usecase.auth.*;
-import com.soupulsar.application.usecase.availability.CreateAvailabilityUseCase;
 import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
 import com.soupulsar.application.usecase.payment.HandlePaymentWebhookUseCase;
 import com.soupulsar.application.usecase.payment.ProcessPaymentUseCase;
@@ -176,5 +179,40 @@ public class UseCaseConfig {
     @Bean
     public GetSessionDetailsUseCase getSessionDetailsUseCase(SecurityUtils securityUtils, SessionRepository sessionRepository, UserRepository userRepository, WhatsAppLinkGenerator whatsAppLinkGenerator) {
         return new GetSessionDetailsUseCase(securityUtils, sessionRepository, userRepository, whatsAppLinkGenerator);
+    }
+
+    @Bean
+    public UpdateAvailabilityUseCase updateAvailabilityUseCase(AvailabilityRepository availabilityRepository, SessionRepository sessionRepository) {
+        return new UpdateAvailabilityUseCase(availabilityRepository, sessionRepository);
+    }
+
+    @Bean
+    public DeleteAvailabilityUseCase deleteAvailabilityUseCase(AvailabilityRepository availabilityRepository, SessionRepository sessionRepository) {
+        return new DeleteAvailabilityUseCase(availabilityRepository, sessionRepository);
+    }
+
+    @Bean
+    public CreateAvailabilityBlockUseCase createAvailabilityBlockUseCase(AvailabilityBlockRepository availabilityBlockRepository, SessionRepository sessionRepository) {
+        return new CreateAvailabilityBlockUseCase(availabilityBlockRepository, sessionRepository);
+    }
+
+    @Bean
+    public DeleteAvailabilityBlockUseCase deleteAvailabilityBlockUseCase(AvailabilityBlockRepository availabilityBlockRepository) {
+        return new DeleteAvailabilityBlockUseCase(availabilityBlockRepository);
+    }
+
+    @Bean
+    public UpdateAvailabilityDayUseCase updateAvailabilityDayUseCase(AvailabilityRepository availabilityRepository, SessionRepository sessionRepository, SecurityUtils securityUtils) {
+        return new UpdateAvailabilityDayUseCase(availabilityRepository, sessionRepository, securityUtils);
+    }
+
+    @Bean
+    public GetSpecialistAvailabilitiesUseCase getSpecialistAvailabilitiesUseCase(AvailabilityRepository availabilityRepository, SecurityUtils securityUtils) {
+        return new GetSpecialistAvailabilitiesUseCase(availabilityRepository, securityUtils);
+    }
+
+    @Bean
+    public GetSpecialistAvailabilityBlocksUseCase getSpecialistAvailabilityBlocksUseCase(AvailabilityBlockRepository availabilityBlockRepository, SecurityUtils securityUtils) {
+        return new GetSpecialistAvailabilityBlocksUseCase(availabilityBlockRepository, securityUtils);
     }
 }

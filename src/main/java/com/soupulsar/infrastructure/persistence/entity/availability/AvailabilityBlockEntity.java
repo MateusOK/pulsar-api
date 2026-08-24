@@ -2,8 +2,6 @@ package com.soupulsar.infrastructure.persistence.entity.availability;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -11,16 +9,14 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "availabilities")
-@Setter
+@Table(name = "availability_blocks")
 @Getter
-public class AvailabilityEntity {
+@Setter
+public class AvailabilityBlockEntity {
 
     @Id
     @Column(nullable = false, unique = true)
@@ -29,18 +25,14 @@ public class AvailabilityEntity {
     @Column(nullable = false)
     private UUID specialistId;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DayOfWeek dayOfWeek;
+    private LocalDateTime startsAt;
 
     @Column(nullable = false)
-    private boolean enabled;
+    private LocalDateTime endsAt;
 
     @Column(nullable = false)
-    private LocalTime startTime;
-
-    @Column(nullable = false)
-    private LocalTime endTime;
+    private String reason;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

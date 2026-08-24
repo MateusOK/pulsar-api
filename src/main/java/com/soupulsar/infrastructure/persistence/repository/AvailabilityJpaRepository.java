@@ -7,7 +7,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.UUID;
 
-public interface AvailabilityJpaRepository extends JpaRepository<AvailabilityEntity, Long> {
+public interface AvailabilityJpaRepository extends JpaRepository<AvailabilityEntity, UUID> {
 
     List<AvailabilityEntity> findBySpecialistId(UUID specialistId);
     List<AvailabilityEntity> findBySpecialistIdAndDayOfWeek(UUID specialistId, DayOfWeek dayOfWeek);

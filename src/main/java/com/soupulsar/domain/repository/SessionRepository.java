@@ -5,8 +5,10 @@ import com.soupulsar.application.specialist.shared.daterange.DateRange;
 import com.soupulsar.domain.model.enums.SessionStatus;
 import com.soupulsar.domain.model.session.Session;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 public interface SessionRepository {
@@ -32,4 +34,7 @@ public interface SessionRepository {
     List<CalendarSessionResponse> findCalendarSessions(UUID specialistId, DateRange period);
 
     Optional<Session> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId);
+
+    long countConflictingFutureSessionsForAvailability(UUID specialistId, DayOfWeek dayOfWeek, LocalTime startAt, LocalTime endAt);
+    long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId,LocalDateTime startAt, LocalDateTime endAt);
 }
