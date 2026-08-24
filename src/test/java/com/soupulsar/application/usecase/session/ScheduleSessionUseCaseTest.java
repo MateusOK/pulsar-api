@@ -43,7 +43,7 @@ class ScheduleSessionUseCaseTest {
 
         ScheduleSessionRequest request = new ScheduleSessionRequest(clientId, specialistId, start, end);
 
-        Availability availability = new Availability(UUID.randomUUID(), specialistId, start.getDayOfWeek(), LocalTime.of(9, 0), LocalTime.of(17, 0));
+        Availability availability = Availability.restore(UUID.randomUUID(), specialistId, start.getDayOfWeek(), true, LocalTime.of(9, 0), LocalTime.of(17, 0));
         when(availabilityRepository.findBySpecialistIdAndDayOfWeek(any(), any())).thenReturn(List.of(availability));
         when(sessionRepository.findOverlappingSessions(any(), any(), any())).thenReturn(List.of());
 
@@ -65,7 +65,7 @@ class ScheduleSessionUseCaseTest {
 
         ScheduleSessionRequest request = new ScheduleSessionRequest(clientId, specialistId, start, end);
 
-        Availability availability = new Availability(UUID.randomUUID(), specialistId, start.getDayOfWeek(), LocalTime.of(9, 0), LocalTime.of(17, 0));
+        Availability availability = Availability.restore(UUID.randomUUID(), specialistId, start.getDayOfWeek(), true, LocalTime.of(9, 0), LocalTime.of(17, 0));
         when(availabilityRepository.findBySpecialistIdAndDayOfWeek(any(), any())).thenReturn(List.of(availability));
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> useCase.execute(request));
@@ -81,7 +81,7 @@ class ScheduleSessionUseCaseTest {
 
         ScheduleSessionRequest request = new ScheduleSessionRequest(clientId, specialistId, start, end);
 
-        Availability availability = new Availability(UUID.randomUUID(), specialistId, start.getDayOfWeek(), LocalTime.of(9, 0), LocalTime.of(17, 0));
+        Availability availability = Availability.restore(UUID.randomUUID(), specialistId, start.getDayOfWeek(), true, LocalTime.of(9, 0), LocalTime.of(17, 0));
         when(availabilityRepository.findBySpecialistIdAndDayOfWeek(any(), any())).thenReturn(List.of(availability));
 
         Session overlappingSession = Session.scheduleSession(specialistId, UUID.randomUUID(), start.minusMinutes(30), end.plusMinutes(30));

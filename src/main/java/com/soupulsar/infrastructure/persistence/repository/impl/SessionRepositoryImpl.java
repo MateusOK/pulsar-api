@@ -11,8 +11,10 @@ import com.soupulsar.infrastructure.persistence.mapper.SessionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -100,5 +102,15 @@ public class SessionRepositoryImpl implements SessionRepository {
     public Optional<Session> findBySessionIdAndSpecialistId(UUID sessionId, UUID specialistId) {
         return jpaRepository.findBySessionIdAndSpecialistId(sessionId, specialistId)
                 .map(SessionMapper::toModel);
+    }
+
+    @Override
+    public long countConflictingFutureSessionsForAvailability(UUID specialistId, DayOfWeek dayOfWeek, LocalTime startAt, LocalTime endAt) {
+        return jpaRepository.countConflictingFutureSessionsForAvailability(specialistId, dayOfWeek, startAt, endAt);
+    }
+
+    @Override
+    public long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt) {
+        return jpaRepository.countConflictingFutureSessionsForAvailabilityBlocks(specialistId, startAt, endAt);
     }
 }
