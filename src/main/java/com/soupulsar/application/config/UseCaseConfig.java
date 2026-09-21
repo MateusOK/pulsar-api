@@ -6,6 +6,8 @@ import com.soupulsar.application.interfaces.PaymentGateway;
 import com.soupulsar.application.interfaces.TokenGenerator;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.application.session.*;
+import com.soupulsar.application.session.shared.SessionAvailabilityChecker;
 import com.soupulsar.application.specialist.availability.*;
 import com.soupulsar.application.specialist.block.CreateAvailabilityBlockUseCase;
 import com.soupulsar.application.specialist.block.DeleteAvailabilityBlockUseCase;
@@ -19,10 +21,6 @@ import com.soupulsar.application.usecase.auth.*;
 import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
 import com.soupulsar.application.usecase.payment.HandlePaymentWebhookUseCase;
 import com.soupulsar.application.usecase.payment.ProcessPaymentUseCase;
-import com.soupulsar.application.usecase.session.CancelSessionUseCase;
-import com.soupulsar.application.usecase.session.CompleteSessionUseCase;
-import com.soupulsar.application.usecase.session.ConfirmSessionUseCase;
-import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
 import com.soupulsar.application.specialist.GetAllSpecialistsUseCase;
 import com.soupulsar.application.specialist.GetDailyAvailabilityUseCase;
 import com.soupulsar.application.specialist.dashboard.GetSpecialistDashboardUseCase;
@@ -34,7 +32,6 @@ import com.soupulsar.application.usecase.user.UpdateUserProfileUseCase;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.repository.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,8 +47,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public ScheduleSessionUseCase scheduleSessionUseCase(SessionRepository sessionRepository, AvailabilityRepository availabilityRepository, ApplicationEventPublisher publisher) {
-        return new ScheduleSessionUseCase(sessionRepository, availabilityRepository, publisher);
+    public ScheduleSessionUseCase scheduleSessionUseCase(SessionRepository sessionRepository, SessionAvailabilityChecker sessionAvailabilityChecker) {
+        return new ScheduleSessionUseCase(sessionRepository, sessionAvailabilityChecker);
     }
 
     @Bean
@@ -60,14 +57,20 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CancelSessionUseCase cancelSessionUseCase(SessionRepository sessionRepository) {
-        return new CancelSessionUseCase(sessionRepository);
+    public CancelSessionUseCase cancelSessionUseCase(SessionRepository sessionRepository, PaymentRepository paymentRepository, PaymentGateway paymentGateway, SecurityUtils securityUtils, Clock clock) {
+        return new CancelSessionUseCase(sessionRepository, paymentRepository, paymentGateway, securityUtils, clock);
     }
 
     @Bean
     public CompleteSessionUseCase completeSessionUseCase(SessionRepository sessionRepository) {
         return new CompleteSessionUseCase(sessionRepository);
     }
+
+    @Bean
+    public SessionAvailabilityChecker sessionAvailabilityChecker(SessionRepository sessionRepository, AvailabilityRepository availabilityRepository, AvailabilityBlockRepository availabilityBlockRepository) {
+        return new SessionAvailabilityChecker(sessionRepository, availabilityRepository, availabilityBlockRepository);
+    }
+
     @Bean
     public AuthenticateUserUseCase authenticateUserUseCase(UserRepository userRepository, PasswordHasher passwordHasher, JwtService jwtService) {
         return new AuthenticateUserUseCase(userRepository, passwordHasher, jwtService);
@@ -214,5 +217,10 @@ public class UseCaseConfig {
     @Bean
     public GetSpecialistAvailabilityBlocksUseCase getSpecialistAvailabilityBlocksUseCase(AvailabilityBlockRepository availabilityBlockRepository, SecurityUtils securityUtils) {
         return new GetSpecialistAvailabilityBlocksUseCase(availabilityBlockRepository, securityUtils);
+    }
+
+    @Bean
+    public RescheduleSessionUseCase rescheduleSessionUseCase(SessionRepository sessionRepository, SecurityUtils securityUtils, SessionAvailabilityChecker sessionAvailabilityChecker) {
+        return new RescheduleSessionUseCase(securityUtils, sessionRepository, sessionAvailabilityChecker);
     }
 }

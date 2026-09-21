@@ -1,16 +1,14 @@
 package com.soupulsar.domain.payment;
 
-import com.soupulsar.domain.model.enums.GatewayPaymentEvent;
 import com.soupulsar.domain.model.enums.PaymentMethod;
 import com.soupulsar.domain.model.enums.PaymentStatus;
+import com.soupulsar.domain.model.payment.Payment;
 import com.soupulsar.domain.model.vo.Money;
 import com.soupulsar.domain.model.vo.PaymentAmounts;
 import com.soupulsar.domain.model.vo.PaymentSplit;
-import com.soupulsar.domain.model.payment.Payment;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,19 +23,18 @@ class PaymentTest {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("100.00")), new Money(new BigDecimal("20.00")));
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("10.00")), new Money(new BigDecimal("70.00")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
 
-        assertNotNull(p.getId());
-        assertEquals(amounts, p.getAmounts());
-        assertEquals(split, p.getSplit());
-        assertEquals(PaymentStatus.CREATED, p.getPaymentStatus());
-        assertTrue(p.isCreated());
+        assertNotNull(payment.getId());
+        assertEquals(amounts, payment.getAmounts());
+        assertEquals(split, payment.getSplit());
+        assertEquals(PaymentStatus.CREATED, payment.getPaymentStatus());
+        assertTrue(payment.isCreated());
     }
 
     @Test
     void createWithInvalidSplitTotalThrows() {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("100.00")), new Money(new BigDecimal("20.00")));
-        // split total = 10 + 80 = 90 != final amount 80
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("10.00")), new Money(new BigDecimal("80.00")));
 
         assertThrows(IllegalArgumentException.class,
@@ -50,17 +47,17 @@ class PaymentTest {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("50.00")), Money.zero());
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("5.00")), new Money(new BigDecimal("45.00")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.CREDIT_CARD);
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.CREDIT_CARD);
 
-        p.markAsPending("ext-1", "https://pay.link");
-        assertEquals(PaymentStatus.PENDING, p.getPaymentStatus());
-        assertTrue(p.hasExternalPaymentId());
-        assertTrue(p.isPending());
+        payment.markAsPending("ext-1", "https://pay.link");
+        assertEquals(PaymentStatus.PENDING, payment.getPaymentStatus());
+        assertTrue(payment.hasExternalPaymentId());
+        assertTrue(payment.isPending());
 
-        p.markAsPaid();
-        assertEquals(PaymentStatus.PAID, p.getPaymentStatus());
-        assertTrue(p.isPaid());
-        assertNotNull(p.getPaidAt());
+        payment.markAsPaid();
+        assertEquals(PaymentStatus.PAID, payment.getPaymentStatus());
+        assertTrue(payment.isPaid());
+        assertNotNull(payment.getPaidAt());
     }
 
     @Test
@@ -68,10 +65,10 @@ class PaymentTest {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("10.00")), Money.zero());
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("1.00")), new Money(new BigDecimal("9.00")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.BOLETO);
-        p.markAsPending("ext-2", "link");
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.BOLETO);
+        payment.markAsPending("ext-2", "link");
 
-        assertThrows(IllegalStateException.class, () -> p.markAsPending("ext-3", "other"));
+        assertThrows(IllegalStateException.class, () -> payment.markAsPending("ext-3", "other"));
     }
 
     @Test
@@ -79,49 +76,62 @@ class PaymentTest {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("35.00")), Money.zero());
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("3.50")), new Money(new BigDecimal("31.50")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.DEBIT_CARD);
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.DEBIT_CARD);
 
-        assertThrows(IllegalStateException.class, p::markAsPaid);
+        assertThrows(IllegalStateException.class, payment::markAsPaid);
     }
 
     @Test
-    void refundWindowBehavior() {
+    void requestRefundFlow() {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("80.00")), Money.zero());
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("8.00")), new Money(new BigDecimal("72.00")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
-        p.markAsPending("ext-4", "link");
-        p.markAsPaid();
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
+        payment.markAsPending("ext-4", "link");
+        payment.markAsPaid();
 
-        // session 2 days from now -> within refund window (more than 24h ahead)
-        LocalDateTime sessionFar = LocalDateTime.now().plusDays(2);
-        p.markAsRefunded(sessionFar);
-        assertEquals(PaymentStatus.REFUNDED, p.getPaymentStatus());
-        assertNotNull(p.getRefundedAt());
+        payment.requestRefund();
 
-        // create a fresh paid payment and attempt refund outside window
-        Payment p2 = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
-        p2.markAsPending("ext-5", "link");
-        p2.markAsPaid();
-
-        LocalDateTime sessionSoon = LocalDateTime.now().plusHours(10);
-        assertThrows(IllegalStateException.class, () -> p2.markAsRefunded(sessionSoon));
+        assertEquals(PaymentStatus.REFUND_PENDING, payment.getPaymentStatus());
     }
 
     @Test
-    void handleGatewayEvents() {
+    void requestRefundInvalidStateThrows() {
         PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("60.00")), Money.zero());
         PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("6.00")), new Money(new BigDecimal("54.00")));
 
-        Payment p = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
-        p.markAsPending("ext-6", "link");
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
+        payment.markAsPending("ext-5", "link");
 
-        assertTrue(p.handleGatewayEvent(GatewayPaymentEvent.PAID));
-        assertEquals(PaymentStatus.PAID, p.getPaymentStatus());
+        assertThrows(IllegalStateException.class, payment::requestRefund);
+    }
 
-        // REFUNDED via gateway will attempt to refund using session = now + 1 day which will usually NOT satisfy refund window
-        // So it is expected to throw when called on a PAID payment
-        assertThrows(IllegalStateException.class, () -> p.handleGatewayEvent(GatewayPaymentEvent.REFUNDED));
+    @Test
+    void markAsRefundedFlow() {
+        PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("90.00")), Money.zero());
+        PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("9.00")), new Money(new BigDecimal("81.00")));
+
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
+        payment.markAsPending("ext-6", "link");
+        payment.markAsPaid();
+        payment.requestRefund();
+
+        payment.markAsRefunded();
+
+        assertEquals(PaymentStatus.REFUNDED, payment.getPaymentStatus());
+        assertNotNull(payment.getRefundedAt());
+    }
+
+    @Test
+    void markAsRefundedInvalidStateThrows() {
+        PaymentAmounts amounts = new PaymentAmounts(new Money(new BigDecimal("45.00")), Money.zero());
+        PaymentSplit split = new PaymentSplit(new Money(new BigDecimal("4.50")), new Money(new BigDecimal("40.50")));
+
+        Payment payment = Payment.create(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), amounts, split, PaymentMethod.PIX);
+        payment.markAsPending("ext-7", "link");
+        payment.markAsPaid();
+
+        assertThrows(IllegalStateException.class, payment::markAsRefunded);
     }
 }
 

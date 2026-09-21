@@ -30,7 +30,19 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
+    public Payment saveAndFlush(Payment payment) {
+        PaymentEntity entity = PaymentMapper.toEntity(payment);
+        PaymentEntity saved = paymentJpaRepository.saveAndFlush(entity);
+        return PaymentMapper.toModel(saved);
+    }
+
+    @Override
     public Optional<Payment> findByExternalPaymentId(String externalPaymentId) {
         return paymentJpaRepository.findByExternalPaymentId(externalPaymentId).map(PaymentMapper::toModel);
+    }
+
+    @Override
+    public Optional<Payment> findBySessionId(UUID sessionId) {
+        return paymentJpaRepository.findBySessionId(sessionId).map(PaymentMapper::toModel);
     }
 }

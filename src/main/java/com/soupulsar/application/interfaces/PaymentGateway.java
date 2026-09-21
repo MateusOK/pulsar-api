@@ -9,4 +9,5 @@ import com.soupulsar.domain.model.specialist.SpecialistProfile;
 public interface PaymentGateway {
     ExternalPaymentResult processPayment(Payment payment, ClientProfile customer, SpecialistProfile specialist, Session session);
     String retrieveSinglePaymentLink(String paymentExternalReference);
+    void refundPayment(String paymentExternalReference, Double amount);
 }

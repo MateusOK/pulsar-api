@@ -22,8 +22,8 @@ public class Session {
     private final UUID specialistId;
     private final UUID clientId;
 
-    private final LocalDateTime startAt;
-    private final LocalDateTime endAt;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
 
     private SessionStatus status;
 
@@ -52,9 +52,21 @@ public class Session {
 
     public void cancelSession() {
         if (this.status == SessionStatus.CANCELLED || this.status == SessionStatus.COMPLETED) {
-            throw new IllegalStateException("Cannot cancel a session that is already cancelled or completed.");
+            throw new IllegalStateException("Session cannot be cancelled. It may have already started or is too close to the start time.");
         }
         this.status = SessionStatus.CANCELLED;
+    }
+
+    public void rescheduleSession(LocalDateTime newStartAt, LocalDateTime newEndAt) {
+        if (status != SessionStatus.CONFIRMED) {
+            throw new IllegalStateException("Session cannot be rescheduled.");
+        }
+
+        if (!newEndAt.isAfter(newStartAt)) {
+            throw new IllegalArgumentException("End time must be after start time.");
+        }
+        this.startAt = newStartAt;
+        this.endAt = newEndAt;
     }
 
     public void completeSession() {
@@ -83,5 +95,4 @@ public class Session {
     public boolean belongsTo(UUID clientId, UUID specialistId) {
         return this.clientId.equals(clientId) && this.specialistId.equals(specialistId);
     }
-
 }
