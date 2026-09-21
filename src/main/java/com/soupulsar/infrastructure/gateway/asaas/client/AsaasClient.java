@@ -1,6 +1,7 @@
 package com.soupulsar.infrastructure.gateway.asaas.client;
 
 import com.asaas.apisdk.models.CustomerSaveRequestDto;
+import com.asaas.apisdk.models.PaymentRefundRequestDto;
 import com.asaas.apisdk.models.PaymentSaveRequestDto;
 import com.soupulsar.infrastructure.gateway.asaas.dto.CustomerCreateResponse;
 import com.soupulsar.infrastructure.gateway.asaas.dto.PaymentCreateResponse;
@@ -11,5 +12,5 @@ public interface AsaasClient {
     CustomerCreateResponse createCustomer(CustomerSaveRequestDto request);
     PaymentCreateResponse  createPayment(PaymentSaveRequestDto request);
     PaymentDetailResponse retrieveSinglePayment(String paymentExternalReference);
-
+    void refundPayment(String paymentExternalReference, PaymentRefundRequestDto refundRequest);
 }

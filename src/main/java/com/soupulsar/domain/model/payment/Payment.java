@@ -1,6 +1,5 @@
 package com.soupulsar.domain.model.payment;
 
-import com.soupulsar.domain.model.enums.GatewayPaymentEvent;
 import com.soupulsar.domain.model.enums.PaymentMethod;
 import com.soupulsar.domain.model.enums.PaymentStatus;
 import com.soupulsar.domain.model.vo.PaymentAmounts;
@@ -11,7 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -33,10 +32,8 @@ public class Payment {
     private PaymentMethod paymentMethod;
     private PaymentStatus paymentStatus;
 
-    private LocalDateTime paidAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime refundedAt;
-    private LocalDateTime updatedAt;
+    private Instant paidAt;
+    private Instant refundedAt;
 
     public static Payment create(UUID sessionId, UUID specialistId, UUID clientId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod) {
         validateSplitParams(split, amounts);
@@ -50,11 +47,10 @@ public class Payment {
                 .amounts(amounts)
                 .split(split)
                 .paymentStatus(PaymentStatus.CREATED)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
-    public static Payment restore(UUID id, UUID sessionId, UUID specialistId, UUID clientId, String externalPaymentId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod, PaymentStatus paymentStatus, LocalDateTime paidAt, LocalDateTime createdAt, LocalDateTime refundedAt, LocalDateTime updatedAt) {
+    public static Payment restore(UUID id, UUID sessionId, UUID specialistId, UUID clientId, String externalPaymentId, PaymentAmounts amounts, PaymentSplit split, PaymentMethod paymentMethod, PaymentStatus paymentStatus, Instant paidAt, Instant refundedAt) {
         return Payment.builder()
                 .id(id)
                 .sessionId(sessionId)
@@ -66,9 +62,7 @@ public class Payment {
                 .paymentMethod(paymentMethod)
                 .paymentStatus(paymentStatus)
                 .paidAt(paidAt)
-                .createdAt(createdAt)
                 .refundedAt(refundedAt)
-                .updatedAt(updatedAt)
                 .build();
     }
 
@@ -85,25 +79,22 @@ public class Payment {
         this.externalPaymentId = externalPaymentId;
         this.paymentLink = paymentLink;
         this.paymentStatus = PaymentStatus.PENDING;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void markAsPaid(){
-        if (paymentStatus != PaymentStatus.PENDING){
+        if (paymentStatus != PaymentStatus.PENDING && paymentStatus != PaymentStatus.OVERDUE){
             throw new IllegalStateException("Only PENDING payments can be marked as PAID");
         } else {
             this.paymentStatus = PaymentStatus.PAID;
-            this.paidAt = LocalDateTime.now();
-            this.updatedAt = LocalDateTime.now();
+            this.paidAt = Instant.now();
         }
     }
 
     public void markAsFailed(){
-        if (paymentStatus != PaymentStatus.PENDING){
+        if (paymentStatus != PaymentStatus.PENDING && paymentStatus != PaymentStatus.OVERDUE){
             throw new IllegalStateException("Only PENDING payments can be marked as FAILED");
         }
         this.paymentStatus = PaymentStatus.FAILED;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void markAsOverdue(){
@@ -111,7 +102,6 @@ public class Payment {
             throw new IllegalStateException("Only PENDING payments can be marked as OVERDUE");
         }
         this.paymentStatus = PaymentStatus.OVERDUE;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void changePaymentMethod(PaymentMethod newMethod){
@@ -122,25 +112,21 @@ public class Payment {
             throw new IllegalArgumentException("New payment method cannot be null");
         }
         this.paymentMethod = newMethod;
-        this.updatedAt = LocalDateTime.now();
     }
 
-    public void markAsRefunded(LocalDateTime sessionDateTime){
-        if (paymentStatus != PaymentStatus.PAID){
-            throw new IllegalStateException("Only PAID payments can be marked as REFUNDED");
-        }
-        if (!canBeRefunded(sessionDateTime)){
-            throw new IllegalStateException("Payment cannot be refunded after the refund window");
+    public void markAsRefunded(){
+        if (paymentStatus != PaymentStatus.REFUND_PENDING){
+            throw new IllegalStateException("Only pending refunds can be marked as refunded");
         }
         this.paymentStatus = PaymentStatus.REFUNDED;
-        this.refundedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.refundedAt = Instant.now();
     }
 
-    public boolean canBeRefunded(LocalDateTime sessionDateTime) {
-        return paymentStatus == PaymentStatus.PAID &&
-                paidAt != null &&
-                LocalDateTime.now().isBefore(sessionDateTime.minusHours(24));
+    public void requestRefund(){
+        if (paymentStatus != PaymentStatus.PAID){
+            throw new IllegalStateException("Only PAID payments can be requested for REFUND");
+        }
+        this.paymentStatus = PaymentStatus.REFUND_PENDING;
     }
 
     private static void validateCreationParams(UUID sessionId, UUID specialistId, UUID clientId, PaymentMethod paymentMethod) {
@@ -161,41 +147,6 @@ public class Payment {
     private static void validateSplitParams(PaymentSplit split, PaymentAmounts amounts) {
         if (!split.totalAmount().equals(amounts.getFinalAmount())){
             throw new IllegalArgumentException("Payment split total must equal the final payment amount");
-        }
-    }
-
-    public boolean handleGatewayEvent(GatewayPaymentEvent event){
-
-        switch (event){
-            case PAID -> {
-                if (paymentStatus == PaymentStatus.PENDING || paymentStatus == PaymentStatus.OVERDUE){
-                    markAsPaid();
-                    return true;
-                }
-                return false;
-            }
-            case OVERDUE -> {
-                if (paymentStatus == PaymentStatus.PENDING){
-                    markAsOverdue();
-                    return true;
-                }
-                return false;
-            }
-            case FAILED -> {
-                if (paymentStatus == PaymentStatus.PENDING){
-                    markAsFailed();
-                    return true;
-                }
-                return false;
-            }
-            case REFUNDED -> {
-                if (paymentStatus == PaymentStatus.PAID) {
-                    markAsRefunded(LocalDateTime.now().plusDays(1));
-                    return true;
-                }
-                return false;
-            }
-            default -> {return false;}
         }
     }
 

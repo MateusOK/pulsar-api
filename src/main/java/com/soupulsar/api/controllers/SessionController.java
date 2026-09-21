@@ -1,10 +1,12 @@
 package com.soupulsar.api.controllers;
 
+import com.soupulsar.application.dto.request.RescheduleSessionRequest;
 import com.soupulsar.application.dto.request.ScheduleSessionRequest;
 import com.soupulsar.application.dto.response.ScheduleSessionResponse;
 import com.soupulsar.application.dto.response.SessionResponse;
-import com.soupulsar.application.usecase.session.CancelSessionUseCase;
-import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
+import com.soupulsar.application.session.CancelSessionUseCase;
+import com.soupulsar.application.session.RescheduleSessionUseCase;
+import com.soupulsar.application.session.ScheduleSessionUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,6 +28,7 @@ public class SessionController {
 
     private final ScheduleSessionUseCase scheduleSessionUseCase;
     private final CancelSessionUseCase cancelSessionUseCase;
+    private final RescheduleSessionUseCase rescheduleSessionUseCase;
 
     @Operation(summary = "Schedule a Session", description = "Schedule a new session with a specialist")
     @ApiResponses(value = {
@@ -48,4 +51,8 @@ public class SessionController {
         return ResponseEntity.ok(cancelSessionUseCase.execute(sessionId));
     }
 
+    @PutMapping("/reschedule")
+    public ResponseEntity<ScheduleSessionResponse> updateSession(@RequestBody RescheduleSessionRequest request) {
+        return ResponseEntity.ok(rescheduleSessionUseCase.execute(request));
+    }
 }

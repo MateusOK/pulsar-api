@@ -1,6 +1,7 @@
 package com.soupulsar.infrastructure.gateway.asaas;
 
 import com.asaas.apisdk.AsaasSdk;
+import com.asaas.apisdk.models.PaymentRefundRequestDto;
 import com.asaas.apisdk.models.PaymentSaveRequestBillingType;
 import com.asaas.apisdk.models.PaymentSaveRequestDto;
 import com.asaas.apisdk.models.PaymentSplitRequestDto;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class AsaasPaymentGateway implements PaymentGateway {
 
     private final AsaasClient asaasSdk;
+    private final Clock clock;
 
     @Override
     public ExternalPaymentResult processPayment(Payment payment, ClientProfile client, SpecialistProfile specialist, Session session) {
@@ -51,11 +54,22 @@ public class AsaasPaymentGateway implements PaymentGateway {
         }
     }
 
+    @Override
+    public void refundPayment(String paymentExternalReference, Double amount) {
+        try {
+            var refundRequest = buildPaymentRefundRequest(amount);
+            asaasSdk.refundPayment(paymentExternalReference, refundRequest);
+        } catch (Exception e) {
+            log.error("Failed to refund payment in Asaas for payment reference {}", paymentExternalReference, e);
+            throw new RuntimeException("Failed to refund payment in Asaas", e);
+        }
+    }
+
     private PaymentSaveRequestDto buildPaymentRequest(Payment payment, ClientProfile client, PaymentSplitRequestDto split, Session session) {
 
         LocalDate dueDate = session.getStartAt().minusHours(24).toLocalDate();
-        if (dueDate.isBefore(LocalDate.now())) {
-            dueDate = LocalDate.now().plusDays(1);
+        if (dueDate.isBefore(LocalDate.now(clock))) {
+            dueDate = LocalDate.now(clock).plusDays(1);
         }
         return PaymentSaveRequestDto.builder()
                 .customer(client.getExternalCustomerId())
@@ -71,6 +85,13 @@ public class AsaasPaymentGateway implements PaymentGateway {
         return PaymentSplitRequestDto.builder()
                 .walletId(specialist.getExternalPayoutAccountId())
                 .fixedValue(payment.getSplit().getSpecialistAmount().toDouble())
+                .build();
+    }
+
+    private PaymentRefundRequestDto buildPaymentRefundRequest(Double amount) {
+        return PaymentRefundRequestDto.builder()
+                .value(amount)
+                .description("Session cancelled by specialist.")
                 .build();
     }
 }
