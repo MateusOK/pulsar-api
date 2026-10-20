@@ -9,7 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jdk.jfr.BooleanFlag;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +43,6 @@ public class PaymentSplitRuleEntity {
     @Embedded
     private PercentageEmbeddable platformPercentage;
 
-    @BooleanFlag
     private boolean active;
 
     @CreationTimestamp

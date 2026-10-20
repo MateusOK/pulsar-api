@@ -1,9 +1,7 @@
 package com.soupulsar.application.config;
 
-import com.soupulsar.application.interfaces.CustomerGateway;
-import com.soupulsar.application.interfaces.EmailGateway;
-import com.soupulsar.application.interfaces.PaymentGateway;
-import com.soupulsar.application.interfaces.TokenGenerator;
+import com.soupulsar.application.interfaces.*;
+import com.soupulsar.application.partner.*;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
 import com.soupulsar.application.session.*;
@@ -32,6 +30,7 @@ import com.soupulsar.application.usecase.user.UpdateUserProfileUseCase;
 import com.soupulsar.application.utils.SecurityUtils;
 import com.soupulsar.domain.repository.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -223,4 +222,43 @@ public class UseCaseConfig {
     public RescheduleSessionUseCase rescheduleSessionUseCase(SessionRepository sessionRepository, SecurityUtils securityUtils, SessionAvailabilityChecker sessionAvailabilityChecker) {
         return new RescheduleSessionUseCase(securityUtils, sessionRepository, sessionAvailabilityChecker);
     }
+
+    @Bean
+    public RequestPartnerDiscountCodeUseCase requestPartnerDiscountCodeUseCase(SecurityUtils securityUtils, PartnerRepository partnerRepository,
+                                                                               PartnerEligibilityRepository partnerEligibilityRepository,
+                                                                               PartnerDiscountRepository partnerDiscountRepository,
+                                                                               PartnerDiscountCodeRepository partnerDiscountCodeRepository,
+                                                                               ClientPartnerBenefitRepository clientPartnerBenefitRepository,
+                                                                               TokenGenerator tokenGenerator, TokenHasher tokenHasher,
+                                                                               ApplicationEventPublisher eventPublisher, Clock clock) {
+        return new RequestPartnerDiscountCodeUseCase(securityUtils, partnerRepository, partnerEligibilityRepository,
+                partnerDiscountRepository, partnerDiscountCodeRepository, clientPartnerBenefitRepository,
+                tokenGenerator, tokenHasher, eventPublisher, clock);
+    }
+
+    @Bean
+    public RedeemPartnerDiscountCodeUseCase redeemPartnerDiscountCodeUseCase(SecurityUtils securityUtils, PartnerRepository partnerRepository,
+                                                                             PartnerDiscountRepository partnerDiscountRepository,
+                                                                             PartnerDiscountCodeRepository partnerDiscountCodeRepository,
+                                                                             ClientPartnerBenefitRepository clientPartnerBenefitRepository,
+                                                                             TokenHasher tokenHasher, Clock clock) {
+        return new RedeemPartnerDiscountCodeUseCase(securityUtils, partnerRepository, partnerDiscountRepository,
+                partnerDiscountCodeRepository, clientPartnerBenefitRepository, tokenHasher, clock);
+    }
+
+    @Bean
+    public CreatePartnerUseCase createPartnerUseCase(PartnerRepository partnerRepository) {
+        return new CreatePartnerUseCase(partnerRepository);
+    }
+
+    @Bean
+    public CreatePartnerEligibilityUseCase createPartnerEligibilityUseCase(PartnerEligibilityRepository partnerEligibilityRepository) {
+        return new CreatePartnerEligibilityUseCase(partnerEligibilityRepository);
+    }
+
+    @Bean
+    public CreatePartnerDiscountUseCase createPartnerDiscountUseCase(PartnerDiscountRepository partnerDiscountRepository, Clock clock) {
+        return new CreatePartnerDiscountUseCase(partnerDiscountRepository, clock);
+    }
+
 }
