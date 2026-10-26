@@ -6,6 +6,8 @@ spring:
     jwt:
       secret: ${JWT_SECRET}
       expiration: ${JWT_EXPIRATION}
+    token:
+      hash-secret: ${TOKEN_HASH_SECRET}
 
   datasource:
     url: ${DB_URL}

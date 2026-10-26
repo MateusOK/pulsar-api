@@ -58,7 +58,7 @@ public class PaymentController {
             return ResponseEntity.ok().build();
         }
 
-        handlePaymentWebhookUseCase.execute(request.id(), request.payment().id(), event);
+        handlePaymentWebhookUseCase.execute(request.id(), request.payment().id(), event, request.payment().refunds());
 
         return ResponseEntity.ok().build();
     }

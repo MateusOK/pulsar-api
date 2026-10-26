@@ -21,9 +21,7 @@ public class PaymentMapper {
                 .paymentMethod(payment.getPaymentMethod())
                 .paymentStatus(payment.getPaymentStatus())
                 .paidAt(payment.getPaidAt())
-                .createdAt(payment.getCreatedAt())
                 .refundedAt(payment.getRefundedAt())
-                .updatedAt(payment.getUpdatedAt())
                 .build();
     }
 
@@ -41,9 +39,7 @@ public class PaymentMapper {
                     entity.getPaymentMethod(),
                     entity.getPaymentStatus(),
                     entity.getPaidAt(),
-                    entity.getCreatedAt(),
-                    entity.getRefundedAt(),
-                    entity.getUpdatedAt()
+                    entity.getRefundedAt()
             );
         }
 }

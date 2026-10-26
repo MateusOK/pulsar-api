@@ -61,17 +61,22 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
+    public Session saveAndFlush(Session session) {
+        SessionEntity entity = SessionMapper.toEntity(session);
+        SessionEntity saved = jpaRepository.saveAndFlush(entity);
+        return SessionMapper.toModel(saved);
+    }
+
+
+    @Override
     public Optional<Session> findBySessionId(UUID sessionId) {
         return jpaRepository.findBySessionId(sessionId)
                 .map(SessionMapper::toModel);
     }
 
     @Override
-    public List<Session> findOverlappingSessions(UUID uuid, LocalDateTime startAt, LocalDateTime endAt) {
-        return jpaRepository.findOverlappingSessions(uuid, startAt, endAt)
-                .stream()
-                .map(SessionMapper::toModel)
-                .toList();
+    public boolean existsOverlappingSessions(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt, UUID sessionId) {
+        return jpaRepository.existsOverlappingSessions(specialistId, startAt, endAt, sessionId);
     }
 
     @Override

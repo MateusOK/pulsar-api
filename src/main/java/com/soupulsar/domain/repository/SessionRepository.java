@@ -20,10 +20,11 @@ public interface SessionRepository {
     List<Session> findBySpecialistIdAndDate(UUID specialistId, LocalDate date);
 
     Session save(Session session);
+    Session saveAndFlush(Session session);
 
     Optional<Session> findBySessionId(UUID sessionId);
 
-    List<Session> findOverlappingSessions(UUID uuid, LocalDateTime startAt, LocalDateTime endAt);
+    boolean existsOverlappingSessions(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt, UUID sessionId);
 
     Optional<Session> findNextSession(UUID specialistId, LocalDateTime currentDateTime);
 

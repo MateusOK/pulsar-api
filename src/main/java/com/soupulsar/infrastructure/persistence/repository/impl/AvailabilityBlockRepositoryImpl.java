@@ -8,6 +8,7 @@ import com.soupulsar.infrastructure.persistence.repository.AvailbilityBlockJpaRe
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,5 +41,10 @@ public class AvailabilityBlockRepositoryImpl implements AvailabilityBlockReposit
     @Override
     public void delete(AvailabilityBlock availabilityBlock) {
         jpaRepository.delete(AvailabilityBlockMapper.toEntity(availabilityBlock));
+    }
+
+    @Override
+    public boolean existsOverlappingBlock(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt) {
+        return jpaRepository.existsOverlappingBlockBySpecialistIdAndStartsAtLessThanAndEndsAtGreaterThan(specialistId, endAt, startAt);
     }
 }

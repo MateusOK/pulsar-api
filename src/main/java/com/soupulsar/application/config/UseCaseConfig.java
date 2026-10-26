@@ -1,11 +1,11 @@
 package com.soupulsar.application.config;
 
-import com.soupulsar.application.interfaces.CustomerGateway;
-import com.soupulsar.application.interfaces.EmailGateway;
-import com.soupulsar.application.interfaces.PaymentGateway;
-import com.soupulsar.application.interfaces.TokenGenerator;
+import com.soupulsar.application.interfaces.*;
+import com.soupulsar.application.partner.*;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
+import com.soupulsar.application.session.*;
+import com.soupulsar.application.session.shared.SessionAvailabilityChecker;
 import com.soupulsar.application.specialist.availability.*;
 import com.soupulsar.application.specialist.block.CreateAvailabilityBlockUseCase;
 import com.soupulsar.application.specialist.block.DeleteAvailabilityBlockUseCase;
@@ -19,10 +19,6 @@ import com.soupulsar.application.usecase.auth.*;
 import com.soupulsar.application.usecase.payment.CreatePaymentUseCase;
 import com.soupulsar.application.usecase.payment.HandlePaymentWebhookUseCase;
 import com.soupulsar.application.usecase.payment.ProcessPaymentUseCase;
-import com.soupulsar.application.usecase.session.CancelSessionUseCase;
-import com.soupulsar.application.usecase.session.CompleteSessionUseCase;
-import com.soupulsar.application.usecase.session.ConfirmSessionUseCase;
-import com.soupulsar.application.usecase.session.ScheduleSessionUseCase;
 import com.soupulsar.application.specialist.GetAllSpecialistsUseCase;
 import com.soupulsar.application.specialist.GetDailyAvailabilityUseCase;
 import com.soupulsar.application.specialist.dashboard.GetSpecialistDashboardUseCase;
@@ -50,8 +46,8 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public ScheduleSessionUseCase scheduleSessionUseCase(SessionRepository sessionRepository, AvailabilityRepository availabilityRepository, ApplicationEventPublisher publisher) {
-        return new ScheduleSessionUseCase(sessionRepository, availabilityRepository, publisher);
+    public ScheduleSessionUseCase scheduleSessionUseCase(SessionRepository sessionRepository, SessionAvailabilityChecker sessionAvailabilityChecker) {
+        return new ScheduleSessionUseCase(sessionRepository, sessionAvailabilityChecker);
     }
 
     @Bean
@@ -60,14 +56,20 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CancelSessionUseCase cancelSessionUseCase(SessionRepository sessionRepository) {
-        return new CancelSessionUseCase(sessionRepository);
+    public CancelSessionUseCase cancelSessionUseCase(SessionRepository sessionRepository, PaymentRepository paymentRepository, PaymentGateway paymentGateway, SecurityUtils securityUtils, Clock clock) {
+        return new CancelSessionUseCase(sessionRepository, paymentRepository, paymentGateway, securityUtils, clock);
     }
 
     @Bean
     public CompleteSessionUseCase completeSessionUseCase(SessionRepository sessionRepository) {
         return new CompleteSessionUseCase(sessionRepository);
     }
+
+    @Bean
+    public SessionAvailabilityChecker sessionAvailabilityChecker(SessionRepository sessionRepository, AvailabilityRepository availabilityRepository, AvailabilityBlockRepository availabilityBlockRepository) {
+        return new SessionAvailabilityChecker(sessionRepository, availabilityRepository, availabilityBlockRepository);
+    }
+
     @Bean
     public AuthenticateUserUseCase authenticateUserUseCase(UserRepository userRepository, PasswordHasher passwordHasher, JwtService jwtService) {
         return new AuthenticateUserUseCase(userRepository, passwordHasher, jwtService);
@@ -215,4 +217,48 @@ public class UseCaseConfig {
     public GetSpecialistAvailabilityBlocksUseCase getSpecialistAvailabilityBlocksUseCase(AvailabilityBlockRepository availabilityBlockRepository, SecurityUtils securityUtils) {
         return new GetSpecialistAvailabilityBlocksUseCase(availabilityBlockRepository, securityUtils);
     }
+
+    @Bean
+    public RescheduleSessionUseCase rescheduleSessionUseCase(SessionRepository sessionRepository, SecurityUtils securityUtils, SessionAvailabilityChecker sessionAvailabilityChecker) {
+        return new RescheduleSessionUseCase(securityUtils, sessionRepository, sessionAvailabilityChecker);
+    }
+
+    @Bean
+    public RequestPartnerDiscountCodeUseCase requestPartnerDiscountCodeUseCase(SecurityUtils securityUtils, PartnerRepository partnerRepository,
+                                                                               PartnerEligibilityRepository partnerEligibilityRepository,
+                                                                               PartnerDiscountRepository partnerDiscountRepository,
+                                                                               PartnerDiscountCodeRepository partnerDiscountCodeRepository,
+                                                                               ClientPartnerBenefitRepository clientPartnerBenefitRepository,
+                                                                               TokenGenerator tokenGenerator, TokenHasher tokenHasher,
+                                                                               ApplicationEventPublisher eventPublisher, Clock clock) {
+        return new RequestPartnerDiscountCodeUseCase(securityUtils, partnerRepository, partnerEligibilityRepository,
+                partnerDiscountRepository, partnerDiscountCodeRepository, clientPartnerBenefitRepository,
+                tokenGenerator, tokenHasher, eventPublisher, clock);
+    }
+
+    @Bean
+    public RedeemPartnerDiscountCodeUseCase redeemPartnerDiscountCodeUseCase(SecurityUtils securityUtils, PartnerRepository partnerRepository,
+                                                                             PartnerDiscountRepository partnerDiscountRepository,
+                                                                             PartnerDiscountCodeRepository partnerDiscountCodeRepository,
+                                                                             ClientPartnerBenefitRepository clientPartnerBenefitRepository,
+                                                                             TokenHasher tokenHasher, Clock clock) {
+        return new RedeemPartnerDiscountCodeUseCase(securityUtils, partnerRepository, partnerDiscountRepository,
+                partnerDiscountCodeRepository, clientPartnerBenefitRepository, tokenHasher, clock);
+    }
+
+    @Bean
+    public CreatePartnerUseCase createPartnerUseCase(PartnerRepository partnerRepository) {
+        return new CreatePartnerUseCase(partnerRepository);
+    }
+
+    @Bean
+    public CreatePartnerEligibilityUseCase createPartnerEligibilityUseCase(PartnerEligibilityRepository partnerEligibilityRepository) {
+        return new CreatePartnerEligibilityUseCase(partnerEligibilityRepository);
+    }
+
+    @Bean
+    public CreatePartnerDiscountUseCase createPartnerDiscountUseCase(PartnerDiscountRepository partnerDiscountRepository, Clock clock) {
+        return new CreatePartnerDiscountUseCase(partnerDiscountRepository, clock);
+    }
+
 }

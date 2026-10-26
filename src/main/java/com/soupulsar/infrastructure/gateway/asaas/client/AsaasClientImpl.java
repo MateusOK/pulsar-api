@@ -2,6 +2,7 @@ package com.soupulsar.infrastructure.gateway.asaas.client;
 
 import com.asaas.apisdk.AsaasSdk;
 import com.asaas.apisdk.models.CustomerSaveRequestDto;
+import com.asaas.apisdk.models.PaymentRefundRequestDto;
 import com.asaas.apisdk.models.PaymentSaveRequestDto;
 import com.soupulsar.infrastructure.gateway.asaas.dto.CustomerCreateResponse;
 import com.soupulsar.infrastructure.gateway.asaas.dto.PaymentCreateResponse;
@@ -36,5 +37,9 @@ public class AsaasClientImpl implements AsaasClient {
 
         var response = asaasSdk.payment.retrieveASinglePayment(paymentExternalReference);
         return new PaymentDetailResponse(response.getId(), response.getPaymentLink());
+    }
+    @Override
+    public void refundPayment(String paymentExternalReference, PaymentRefundRequestDto refundRequest) {
+        asaasSdk.payment.refundPayment(paymentExternalReference, refundRequest);
     }
 }

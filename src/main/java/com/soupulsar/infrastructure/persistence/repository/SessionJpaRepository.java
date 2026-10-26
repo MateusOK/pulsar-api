@@ -19,12 +19,15 @@ import java.util.UUID;
 public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID> {
 
     @Query("""
-    SELECT s FROM SessionEntity s
-    WHERE s.specialistId = :specialistId
-    AND s.startAt < :end
-    AND s.endAt > :start
-""")
-    List<SessionEntity> findOverlappingSessions(@Param("specialistId") UUID specialistId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+        SELECT COUNT(s) > 0
+        FROM SessionEntity s
+        WHERE s.specialistId = :specialistId
+        AND s.startAt < :end
+        AND s.endAt > :start
+        AND s.status IN ('CONFIRMED', 'AWAITING_PAYMENT')
+        AND (:sessionId IS NULL OR s.sessionId <> :sessionId)
+    """)
+    boolean existsOverlappingSessions(@Param("specialistId") UUID specialistId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("sessionId") UUID sessionId);
 
     @Query("""
         SELECT s.specialistId, COUNT(s)

@@ -4,13 +4,14 @@ import com.soupulsar.application.dto.response.ExternalPaymentResult;
 import com.soupulsar.infrastructure.gateway.asaas.client.AsaasClient;
 import com.soupulsar.infrastructure.gateway.asaas.dto.PaymentCreateResponse;
 import com.soupulsar.infrastructure.gateway.asaas.dto.PaymentDetailResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.soupulsar.test.factory.TestDomainFactory;
 
+import java.time.Clock;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,8 +25,12 @@ class AsaasPaymentGatewayTest {
     @Mock
     AsaasClient asaasClient;
 
-    @InjectMocks
-    AsaasPaymentGateway gateway;
+    private AsaasPaymentGateway gateway;
+
+    @BeforeEach
+    void setUp() {
+        gateway = new AsaasPaymentGateway(asaasClient, Clock.systemDefaultZone());
+    }
 
     @Test
     void processPayment_calls_sdk_and_returns_external_result() {

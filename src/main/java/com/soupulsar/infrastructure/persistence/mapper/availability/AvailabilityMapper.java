@@ -13,6 +13,7 @@ public class AvailabilityMapper {
         entity.setId(availability.getId());
         entity.setSpecialistId(availability.getSpecialistId());
         entity.setDayOfWeek(availability.getDayOfWeek());
+        entity.setEnabled(availability.isEnabled());
         entity.setStartTime(availability.getStartTime());
         entity.setEndTime(availability.getEndTime());
         return entity;

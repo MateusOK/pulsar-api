@@ -2,6 +2,7 @@ package com.soupulsar.domain.repository;
 
 import com.soupulsar.domain.model.availability.AvailabilityBlock;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,4 +13,5 @@ public interface AvailabilityBlockRepository {
     List<AvailabilityBlock> findAllBySpecialistId(UUID specialistId);
     Optional<AvailabilityBlock> findById(UUID id);
     void delete(AvailabilityBlock availabilityBlock);
+    boolean existsOverlappingBlock(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
 }
