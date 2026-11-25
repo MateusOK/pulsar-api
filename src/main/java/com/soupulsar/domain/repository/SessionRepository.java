@@ -28,6 +28,10 @@ public interface SessionRepository {
 
     Optional<Session> findNextSession(UUID specialistId, LocalDateTime currentDateTime);
 
+    Optional<Session> findNextClientSession(UUID clientId, LocalDateTime currentDateTime);
+
+    List<Session> findByClientId(UUID clientId);
+
     Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
 
     List<Session> findBySpecialistIdAndPeriod(UUID specialistId, DateRange period);

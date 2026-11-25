@@ -86,6 +86,20 @@ public class SessionRepositoryImpl implements SessionRepository {
     }
 
     @Override
+    public Optional<Session> findNextClientSession(UUID clientId, LocalDateTime currentDateTime) {
+        return jpaRepository.findFirstByClientIdAndStatusAndStartAtGreaterThanEqualOrderByStartAtAsc(clientId, SessionStatus.CONFIRMED, currentDateTime)
+                .map(SessionMapper::toModel);
+    }
+
+    @Override
+    public List<Session> findByClientId(UUID clientId) {
+        return jpaRepository.findByClientIdOrderByStartAtAsc(clientId)
+                .stream()
+                .map(SessionMapper::toModel)
+                .toList();
+    }
+
+    @Override
     public Long countSessionsByStatus(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt) {
         return jpaRepository.countBySpecialistIdAndStatusInAndStartAtBetween(specialistId, List.copyOf(statuses), startAt, endAt);
     }

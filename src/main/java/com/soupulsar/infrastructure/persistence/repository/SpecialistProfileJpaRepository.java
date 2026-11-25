@@ -4,11 +4,14 @@ import com.soupulsar.infrastructure.persistence.entity.specialist.SpecialistProf
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface SpecialistProfileJpaRepository extends JpaRepository<SpecialistProfileEntity, Long>, JpaSpecificationExecutor<SpecialistProfileEntity> {
 
     Optional<SpecialistProfileEntity> findByUserId(UUID userId);
+
+    List<SpecialistProfileEntity> findAllByUserIdIn(List<UUID> userIds);
 
 }
