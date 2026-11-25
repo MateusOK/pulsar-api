@@ -3,6 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+skills/system/run-workflow/SKILL.md
 
 ### STS ###
 .apt_generated

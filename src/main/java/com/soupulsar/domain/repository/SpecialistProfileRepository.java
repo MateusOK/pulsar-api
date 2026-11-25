@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +16,5 @@ public interface SpecialistProfileRepository {
     SpecialistProfile save(SpecialistProfile profile);
     Optional<SpecialistProfile> findById(UUID id);
     Page<SpecialistProfile> findAll(SpecialistType type, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    Map<UUID, SpecialistProfile> findAllByUserId(List<UUID> specialistIds);
 }
