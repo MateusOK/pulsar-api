@@ -1,5 +1,7 @@
 package com.soupulsar.application.config;
 
+import com.soupulsar.application.client.GetClientNextAppointmentUseCase;
+import com.soupulsar.application.client.GetClientSessionsUseCase;
 import com.soupulsar.application.interfaces.*;
 import com.soupulsar.application.partner.*;
 import com.soupulsar.application.security.JwtService;
@@ -259,6 +261,23 @@ public class UseCaseConfig {
     @Bean
     public CreatePartnerDiscountUseCase createPartnerDiscountUseCase(PartnerDiscountRepository partnerDiscountRepository, Clock clock) {
         return new CreatePartnerDiscountUseCase(partnerDiscountRepository, clock);
+    }
+
+    @Bean
+    public GetClientSessionsUseCase getClientSessionsUseCase(Clock clock,
+                                                             SecurityUtils securityUtils,
+                                                             SessionRepository sessionRepository,
+                                                             UserRepository userRepository,
+                                                             SpecialistProfileRepository specialistProfileRepository) {
+        return new GetClientSessionsUseCase(clock, securityUtils, sessionRepository, userRepository, specialistProfileRepository);
+    }
+
+    @Bean
+    public GetClientNextAppointmentUseCase getClientNextAppointmentUseCase(Clock clock,
+                                                                           SecurityUtils securityUtils,
+                                                                           UserRepository userRepository,
+                                                                           SessionRepository sessionRepository) {
+        return new GetClientNextAppointmentUseCase(clock, securityUtils, userRepository, sessionRepository);
     }
 
 }

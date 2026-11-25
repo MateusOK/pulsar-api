@@ -57,6 +57,10 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
 
     Optional<SessionEntity> findFirstBySpecialistIdAndStatusAndStartAtGreaterThanEqualOrderByStartAtAsc(UUID specialistId, SessionStatus status, LocalDateTime startAt);
 
+    Optional<SessionEntity> findFirstByClientIdAndStatusAndStartAtGreaterThanEqualOrderByStartAtAsc(UUID clientId, SessionStatus status, LocalDateTime startAt);
+
+    List<SessionEntity> findByClientIdOrderByStartAtAsc(UUID clientId);
+
     Long countBySpecialistIdAndStatusInAndStartAtBetween(UUID specialistId, Collection<SessionStatus> statuses, LocalDateTime startAt, LocalDateTime endAt);
 
     List<SessionEntity> findBySpecialistIdAndStartAtBetweenOrderByStartAtAsc(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);

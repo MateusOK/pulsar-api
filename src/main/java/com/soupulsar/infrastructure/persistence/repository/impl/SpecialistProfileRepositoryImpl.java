@@ -14,8 +14,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -46,5 +50,13 @@ public class SpecialistProfileRepositoryImpl implements SpecialistProfileReposit
         if (maxPrice != null) spec = spec.and(SpecialistSpecifications.hasPriceRange(null, maxPrice));
 
         return jpaRepository.findAll(spec, pageable).map(SpecialistProfileMapper::toModel);
+    }
+
+    @Override
+    public Map<UUID, SpecialistProfile> findAllByUserId(List<UUID> specialistIds) {
+        if (specialistIds == null || specialistIds.isEmpty()) return Collections.emptyMap();
+        return jpaRepository.findAllByUserIdIn(specialistIds)
+                .stream()
+                .collect(Collectors.toMap(SpecialistProfileEntity::getUserId, SpecialistProfileMapper::toModel));
     }
 }
