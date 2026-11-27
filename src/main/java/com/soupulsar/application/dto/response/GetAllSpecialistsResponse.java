@@ -16,5 +16,7 @@ public record GetAllSpecialistsResponse(
         Presentation presentation,
         Money price,
         Long sessionsCompleted
+        , SpecialistType specialistType,
+        BigDecimal averageRating
 ) {
 }

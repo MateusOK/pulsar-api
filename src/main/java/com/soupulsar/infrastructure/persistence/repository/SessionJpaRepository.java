@@ -108,4 +108,6 @@ public interface SessionJpaRepository extends JpaRepository<SessionEntity, UUID>
                 AND s.endAt > :startAt
         """)
     long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt);
+
+    boolean existsByClientIdAndSpecialistIdAndStatus(UUID clientId, UUID specialistId, SessionStatus status);
 }

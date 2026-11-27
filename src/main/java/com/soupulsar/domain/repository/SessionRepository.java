@@ -42,4 +42,6 @@ public interface SessionRepository {
 
     long countConflictingFutureSessionsForAvailability(UUID specialistId, DayOfWeek dayOfWeek, LocalTime startAt, LocalTime endAt);
     long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId,LocalDateTime startAt, LocalDateTime endAt);
+
+    boolean existsCompletedSessionByClientIdAndSpecialistId(UUID clientId, UUID specialistId);
 }
