@@ -132,4 +132,12 @@ public class SessionRepositoryImpl implements SessionRepository {
     public long countConflictingFutureSessionsForAvailabilityBlocks(UUID specialistId, LocalDateTime startAt, LocalDateTime endAt) {
         return jpaRepository.countConflictingFutureSessionsForAvailabilityBlocks(specialistId, startAt, endAt);
     }
+
+    @Override
+    public boolean existsCompletedSessionByClientIdAndSpecialistId(UUID clientId, UUID specialistId) {
+        if (clientId == null || specialistId == null) {
+            return false;
+        }
+        return jpaRepository.existsByClientIdAndSpecialistIdAndStatus(clientId, specialistId, SessionStatus.COMPLETED);
+    }
 }
