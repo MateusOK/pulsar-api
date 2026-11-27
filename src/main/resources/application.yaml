@@ -33,6 +33,10 @@ resend:
   apiKey: ${RESEND_API_KEY}
   fromEmail: ${RESEND_FROM_EMAIL}
 
+openai:
+  moderation:
+    apiKey: ${OPENAI_MODERATION_API_KEY}
+
 springdoc:
   packages-to-scan:
     - com.soupulsar.api.controllers

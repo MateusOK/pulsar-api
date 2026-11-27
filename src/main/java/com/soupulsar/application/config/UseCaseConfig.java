@@ -4,6 +4,9 @@ import com.soupulsar.application.client.GetClientNextAppointmentUseCase;
 import com.soupulsar.application.client.GetClientSessionsUseCase;
 import com.soupulsar.application.interfaces.*;
 import com.soupulsar.application.partner.*;
+import com.soupulsar.application.review.CreateReviewUseCase;
+import com.soupulsar.application.review.GetSpecialistReviewsUseCase;
+import com.soupulsar.application.review.ReviewContentValidator;
 import com.soupulsar.application.security.JwtService;
 import com.soupulsar.application.security.PasswordHasher;
 import com.soupulsar.application.session.*;
@@ -95,8 +98,9 @@ public class UseCaseConfig {
     @Bean
     public GetAllSpecialistsUseCase getAllSpecialistsUseCase(SpecialistProfileRepository specialistProfileRepository,
                                                              UserRepository userRepository,
-                                                             SessionRepository sessionRepository) {
-        return new GetAllSpecialistsUseCase(specialistProfileRepository, userRepository, sessionRepository);
+                                                             SessionRepository sessionRepository,
+                                                             ReviewRepository reviewRepository) {
+        return new GetAllSpecialistsUseCase(specialistProfileRepository, userRepository, sessionRepository, reviewRepository);
     }
 
     @Bean
@@ -278,6 +282,41 @@ public class UseCaseConfig {
                                                                            UserRepository userRepository,
                                                                            SessionRepository sessionRepository) {
         return new GetClientNextAppointmentUseCase(clock, securityUtils, userRepository, sessionRepository);
+    }
+
+    @Bean
+    public ReviewContentValidator reviewContentValidator() {
+        return new ReviewContentValidator();
+    }
+
+    @Bean
+    public CreateReviewUseCase createReviewUseCase(
+            SecurityUtils securityUtils,
+            SpecialistProfileRepository specialistProfileRepository,
+            SessionRepository sessionRepository,
+            ReviewRepository reviewRepository,
+            ReviewContentValidator reviewContentValidator,
+            ReviewModerationGateway reviewModerationGateway
+    ) {
+        return new CreateReviewUseCase(
+                securityUtils,
+                specialistProfileRepository,
+                sessionRepository,
+                reviewRepository,
+                reviewContentValidator,
+                reviewModerationGateway
+        );
+    }
+
+    @Bean
+    public GetSpecialistReviewsUseCase getSpecialistReviewsUseCase(
+            SpecialistProfileRepository specialistProfileRepository,
+            ReviewRepository reviewRepository
+    ) {
+        return new GetSpecialistReviewsUseCase(
+                specialistProfileRepository,
+                reviewRepository
+        );
     }
 
 }

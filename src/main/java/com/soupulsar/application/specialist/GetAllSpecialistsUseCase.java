@@ -7,6 +7,7 @@ import com.soupulsar.domain.model.user.User;
 import com.soupulsar.domain.repository.SessionRepository;
 import com.soupulsar.domain.repository.SpecialistProfileRepository;
 import com.soupulsar.domain.repository.UserRepository;
+import com.soupulsar.domain.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
@@ -20,6 +21,7 @@ public class GetAllSpecialistsUseCase {
     private final SpecialistProfileRepository specialistProfileRepository;
     private final UserRepository userRepository;
     private final SessionRepository sessionRepository;
+    private final ReviewRepository reviewRepository;
 
 
     public Page<GetAllSpecialistsResponse> execute(GetAllSpecialistRequest request) {
@@ -38,6 +40,7 @@ public class GetAllSpecialistsUseCase {
 
         Map<UUID, Long> sessionCompletedCountMap =
                 sessionRepository.countCompletedSessionsBySpecialistIds(userIds);
+        Map<UUID, java.math.BigDecimal> averageRatings = reviewRepository.averagePublishedRatingBySpecialistIds(userIds);
 
         return specialistProfiles.map(specialist ->{
             User user = userMap.get(specialist.getUserId());
@@ -49,7 +52,9 @@ public class GetAllSpecialistsUseCase {
                     user.getAddress().getState(),
                     specialist.getPresentation(),
                     specialist.getSessionPrice(),
-                    sessionCompletedCountMap.getOrDefault(specialist.getUserId(), 0L)
+                    sessionCompletedCountMap.getOrDefault(specialist.getUserId(), 0L),
+                    specialist.getSpecialistType(),
+                    averageRatings.get(specialist.getUserId())
             );
 
         });
